@@ -1,0 +1,23 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "0.0.1",
+	"FriendlyName": "TaskList",
+	"Description": "Prefix your blueprint comments with TODO to see them listed in the task list. Use the task list to organize your UE4 workflow.",
+	"Category": "Productivity",
+	"CreatedBy": "Michael Aldrich",
+	"CreatedByURL": "MichaelJAldrich.com",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "TaskList",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		}
+	]
+}

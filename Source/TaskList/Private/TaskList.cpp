@@ -70,7 +70,7 @@ TSharedRef<SDockTab> FTaskListModule::OnSpawnPluginTab(const FSpawnTabArgs& Spaw
 
 	/*
 	Need to create an FStreamSearch(const FString& InSearchValue) Defined in "FindInBlueprintManager"
-
+	Novelty commiut
 	Need to create a delegate(perhaps with 1 param) see FindInBlueprints.h line 28
 	*/
 

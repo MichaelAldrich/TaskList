@@ -20,6 +20,7 @@ public:
 	void PluginButtonClicked();
 	
 private:
+	FReply UpdateTaskList();
 
 	void AddToolbarExtension(FToolBarBuilder& Builder);
 	void AddMenuExtension(FMenuBuilder& Builder);

@@ -7,6 +7,7 @@
 #include "Widgets/Docking/SDockTab.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/Text/STextBlock.h"
+#include "Widgets/Input/SButton.h"
 #include "Framework/MultiBox/MultiBoxBuilder.h"
 
 static const FName TaskListTabName("TaskList");
@@ -82,8 +83,16 @@ TSharedRef<SDockTab> FTaskListModule::OnSpawnPluginTab(const FSpawnTabArgs& Spaw
 			.HAlign(HAlign_Center)
 			.VAlign(VAlign_Center)
 			[
-				SNew(STextBlock)
-				.Text(WidgetText)
+				SNew(SButton)
+				.Text(LOCTEXT("Super Special Button", "Super Special Button"))
+				//.OnClicked(this, &FTaskListModule::UpdateTaskList)
+				//SNew(SButton)
+				//.Text(LOCTEXT("DisplayTextureAtlases", "Display Texture Atlases"))
+				//.OnClicked(this, &SWidgetReflector::HandleDisplayTextureAtlases)
+	
+				//.OnClicked(this, &SWidgetReflector::HandleDisplayTextureAtlases)
+				//SNew(STextBlock)
+				//.Text(WidgetText)
 			]
 		];
 }

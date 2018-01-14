@@ -17,7 +17,7 @@ static const FName TaskListTabName("TaskList");
 void FTaskListModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
-	// Novelty comit
+	
 	FTaskListStyle::Initialize();
 	FTaskListStyle::ReloadTextures();
 
@@ -73,7 +73,7 @@ TSharedRef<SDockTab> FTaskListModule::OnSpawnPluginTab(const FSpawnTabArgs& Spaw
 	Novelty commiut
 	Need to create a delegate(perhaps with 1 param) see FindInBlueprints.h line 28
 	*/
-
+	UE_LOG(LogTemp, Warning, TEXT("Spawn plugin test"))
 
 	return SNew(SDockTab)
 		.TabRole(ETabRole::NomadTab)
@@ -105,6 +105,12 @@ void FTaskListModule::PluginButtonClicked()
 void FTaskListModule::AddMenuExtension(FMenuBuilder& Builder)
 {
 	Builder.AddMenuEntry(FTaskListCommands::Get().OpenPluginWindow);
+}
+
+FReply FTaskListModule::UpdateTaskList()
+{
+	UE_LOG(LogTemp, Warning, TEXT("We can do stuff when we hit the buton."))
+	return FReply::Handled();
 }
 
 void FTaskListModule::AddToolbarExtension(FToolBarBuilder& Builder)

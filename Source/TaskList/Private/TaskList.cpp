@@ -10,6 +10,8 @@
 #include "Widgets/Input/SButton.h"
 #include "Framework/MultiBox/MultiBoxBuilder.h"
 
+#include "Editor/Kismet/Public/FindInBlueprintManager.h"
+
 static const FName TaskListTabName("TaskList");
 
 #define LOCTEXT_NAMESPACE "FTaskListModule"
@@ -62,19 +64,11 @@ void FTaskListModule::ShutdownModule()
 	FGlobalTabmanager::Get()->UnregisterNomadTabSpawner(TaskListTabName);
 }
 
+
+
 TSharedRef<SDockTab> FTaskListModule::OnSpawnPluginTab(const FSpawnTabArgs& SpawnTabArgs)
 {
-	FText WidgetText = LOCTEXT("WindowWidgetText","I can use built in example plugins. I can even change their icon. Someday some code will run.");
-	//FText::FromString(TEXT("FTaskListModule::OnSpawnPluginTab")),
-	//FText::FromString(TEXT("TaskList.cpp"))
-
-	/*
-	Need to create an FStreamSearch(const FString& InSearchValue) Defined in "FindInBlueprintManager"
-	Novelty commiut
-	Need to create a delegate(perhaps with 1 param) see FindInBlueprints.h line 28
-	*/
-	UE_LOG(LogTemp, Warning, TEXT("Spawn plugin test"))
-
+	//FText WidgetText = LOCTEXT("WindowWidgetText","I can use built in example plugins. I can even change their icon. Someday some code will run.");
 	return SNew(SDockTab)
 		.TabRole(ETabRole::NomadTab)
 		[
@@ -85,14 +79,7 @@ TSharedRef<SDockTab> FTaskListModule::OnSpawnPluginTab(const FSpawnTabArgs& Spaw
 			[
 				SNew(SButton)
 				.Text(LOCTEXT("Super Special Button", "Super Special Button"))
-				//.OnClicked(this, &FTaskListModule::UpdateTaskList)
-				//SNew(SButton)
-				//.Text(LOCTEXT("DisplayTextureAtlases", "Display Texture Atlases"))
-				//.OnClicked(this, &SWidgetReflector::HandleDisplayTextureAtlases)
-	
-				//.OnClicked(this, &SWidgetReflector::HandleDisplayTextureAtlases)
-				//SNew(STextBlock)
-				//.Text(WidgetText)
+				.OnClicked_Raw(this, &FTaskListModule::UpdateTaskList)
 			]
 		];
 }
@@ -109,7 +96,14 @@ void FTaskListModule::AddMenuExtension(FMenuBuilder& Builder)
 
 FReply FTaskListModule::UpdateTaskList()
 {
+	
 	UE_LOG(LogTemp, Warning, TEXT("We can do stuff when we hit the buton."))
+
+	FString ActiveSearchString = "Dragons";
+	/*
+	FString & SearchStringptr = ActiveSearchString;
+	FStreamSearch ActiveSearch = FStreamSearch(;
+	*/
 	return FReply::Handled();
 }
 

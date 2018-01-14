@@ -20,10 +20,11 @@ public:
 	void PluginButtonClicked();
 	
 private:
-	FReply UpdateTaskList();
 
 	void AddToolbarExtension(FToolBarBuilder& Builder);
 	void AddMenuExtension(FMenuBuilder& Builder);
+
+	FReply UpdateTaskList();
 
 	TSharedRef<class SDockTab> OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs);
 

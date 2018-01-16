@@ -105,7 +105,13 @@ FReply FTaskListModule::UpdateTaskList()
 	*/
 
 	FString SearchString = FString("Dragons");
+	//TSharedPtr<class FString> activestring = MakeShareable(new FString("Lolipops"));
+	//auto test = MakeShareable(new FString("Lolipops"));
 	//TSharedPtr< class FStreamSearch> ActiveStreamSearch = MakeShareable(new FStreamSearch(SearchString));
+	//TSharedPtr< class FStreamSearch> ActiveStreamSearch;
+	//MakeShareable(new FStreamSearch(SearchString));
+	// My testing has narrowed it down to the below line
+	//auto test = new FStreamSearch(SearchString);
 	return FReply::Handled();
 }
 

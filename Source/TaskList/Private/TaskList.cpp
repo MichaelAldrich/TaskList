@@ -98,12 +98,14 @@ FReply FTaskListModule::UpdateTaskList()
 {
 	
 	UE_LOG(LogTemp, Warning, TEXT("We can do stuff when we hit the buton."))
-
-	FString ActiveSearchString = "Dragons";
 	/*
-	FString & SearchStringptr = ActiveSearchString;
-	FStreamSearch ActiveSearch = FStreamSearch(;
+	TSharedPtr< FImaginaryBlueprint> ImaginaryBlueprint(new FImaginaryBlueprint(Blueprint->GetName(), Blueprint->GetPathName(), ParentClass, Interfaces, FFindInBlueprintSearchManager::Get().QuerySingleBlueprint(Blueprint)));
+	TSharedPtr< FFiBSearchInstance > SearchInstance(new FFiBSearchInstance);
+	FSearchResult SearchResult = SearchInstance->StartSearchQuery(SearchValue, ImaginaryBlueprint);
 	*/
+
+	FString SearchString = FString("Dragons");
+	//TSharedPtr< class FStreamSearch> ActiveStreamSearch = MakeShareable(new FStreamSearch(SearchString));
 	return FReply::Handled();
 }
 

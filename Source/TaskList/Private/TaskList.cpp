@@ -10,9 +10,12 @@
 #include "Widgets/Input/SButton.h"
 #include "Framework/MultiBox/MultiBoxBuilder.h"
 
-#include "Editor/Kismet/Public/FindInBlueprintManager.h"
+#include "Runtime/AssetRegistry/Public/AssetRegistryModule.h"
+#include "Engine/Blueprint.h"
+#include "EdGraph/EdGraph.h"
+#include "Editor/UnrealEd/Public/EdGraphNode_Comment.h"
 
-static const FName TaskListTabName("TaskList");
+static const FName TaskListTabName("Task List");
 
 #define LOCTEXT_NAMESPACE "FTaskListModule"
 
@@ -49,7 +52,7 @@ void FTaskListModule::StartupModule()
 	}
 	
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(TaskListTabName, FOnSpawnTab::CreateRaw(this, &FTaskListModule::OnSpawnPluginTab))
-		.SetDisplayName(LOCTEXT("FTaskListTabTitle", "TaskList"))
+		.SetDisplayName(LOCTEXT("FTaskListTabTitle", "Task List"))
 		.SetMenuType(ETabSpawnerMenuType::Hidden);
 }
 
@@ -63,8 +66,6 @@ void FTaskListModule::ShutdownModule()
 
 	FGlobalTabmanager::Get()->UnregisterNomadTabSpawner(TaskListTabName);
 }
-
-
 
 TSharedRef<SDockTab> FTaskListModule::OnSpawnPluginTab(const FSpawnTabArgs& SpawnTabArgs)
 {
@@ -97,21 +98,50 @@ void FTaskListModule::AddMenuExtension(FMenuBuilder& Builder)
 FReply FTaskListModule::UpdateTaskList()
 {
 	
-	UE_LOG(LogTemp, Warning, TEXT("We can do stuff when we hit the buton."))
-	/*
-	TSharedPtr< FImaginaryBlueprint> ImaginaryBlueprint(new FImaginaryBlueprint(Blueprint->GetName(), Blueprint->GetPathName(), ParentClass, Interfaces, FFindInBlueprintSearchManager::Get().QuerySingleBlueprint(Blueprint)));
-	TSharedPtr< FFiBSearchInstance > SearchInstance(new FFiBSearchInstance);
-	FSearchResult SearchResult = SearchInstance->StartSearchQuery(SearchValue, ImaginaryBlueprint);
-	*/
+	//UE_LOG(LogTemp, Warning, TEXT("We do a thing when we hit the buton."))
+	FString TaskPrefix = FString("Dragons");
+	
+	FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
+	TArray<FAssetData> AssetData;
+	//TODO only get blueprints in content folder, ignore all blueprints in engine folder. Futhermore, allow user to constrain their search to within a specific directory, default to content.
+	//TODO allow for many different prefixes, or "tokens" as VS calls them
+	//TODO visual studio allows for the creation of "shortcuts" basically things to showup in the task list iwthout being a comment
+	//TODO visual stuio allows for arbitrary white space before the token, should we care about that?
+	//TODO consider supporting comments in other graphs, like materials, sound cues, animation bps/graphs and others I'm sure I'm forgetting. Probably should allow users to select the classes they want to search.
+	AssetRegistryModule.Get().GetAssetsByClass(FName("Blueprint"), AssetData);
+	
+	//auto Stuff = AssetData.Num();
+	//UE_LOG(LogTemp, Warning, TEXT("Number of Results: %i"), Stuff)
+	
+	TArray<UEdGraphNode_Comment*> ResultCommentNodes;
+	
+	for (auto& ActiveBPAssetData : AssetData)
+	{
+		UBlueprint* ActiveBlueprint = Cast<UBlueprint>(ActiveBPAssetData.GetAsset());
+		
+		TArray<UEdGraph*> AllActiveGraphs;
+		ActiveBlueprint->GetAllGraphs(AllActiveGraphs);
 
-	FString SearchString = FString("Dragons");
-	//TSharedPtr<class FString> activestring = MakeShareable(new FString("Lolipops"));
-	//auto test = MakeShareable(new FString("Lolipops"));
-	//TSharedPtr< class FStreamSearch> ActiveStreamSearch = MakeShareable(new FStreamSearch(SearchString));
-	//TSharedPtr< class FStreamSearch> ActiveStreamSearch;
-	//MakeShareable(new FStreamSearch(SearchString));
-	// My testing has narrowed it down to the below line
-	//auto test = new FStreamSearch(SearchString);
+		for (auto& ActiveGraph : AllActiveGraphs)
+		{
+			TArray<UEdGraphNode_Comment*> AllActiveCommentNodes;
+			ActiveGraph->GetNodesOfClass(AllActiveCommentNodes);
+			for (auto& ActiveCommentNode : AllActiveCommentNodes)
+			{
+				if (ActiveCommentNode->GetNodeTitle(ENodeTitleType::FullTitle).ToString().StartsWith(TaskPrefix))
+				{
+					ResultCommentNodes.Add(ActiveCommentNode);
+				}
+			}
+		}
+
+		for (auto& ActiveResultNode : ResultCommentNodes)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Comment: %s"), *ActiveResultNode->GetNodeTitle(ENodeTitleType::FullTitle).ToString())
+		}
+		//UE_LOG(LogTemp, Warning, TEXT("Blueprint: %s, Comments: %i"), *ActiveBPAssetData.AssetName.ToString(), ResultCommentNodes.Num())
+	}
+
 	return FReply::Handled();
 }
 

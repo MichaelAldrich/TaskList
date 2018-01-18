@@ -1,4 +1,4 @@
-// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
+// Copyright (c) 2018 Michael Aldrich. MIT License. See https://github.com/MichaelAldrich/TaskList/blob/427d8aa03cf453857881ac1947aa9a7803c44070/LICENSE
 
 #include "TaskList.h"
 #include "TaskListStyle.h"
@@ -102,6 +102,7 @@ FReply FTaskListModule::UpdateTaskList()
 	//TODO visual studio allows for the creation of "shortcuts" basically things to showup in the task list iwthout being a comment
 	//TODO visual stuio allows for arbitrary white space before the token, should we care about that?
 	//TODO consider supporting comments in other graphs, like materials, sound cues, animation bps/graphs and others I'm sure I'm forgetting. Probably should allow users to select the classes they want to search.
+	//TODO allow users to optionally remove the prefix from the display of the item
 	
 	//NextList
 	//Need to layout the UI, build a method to retun SBox, or Sbutton, or some other slate object when given a TTaskSearchResult

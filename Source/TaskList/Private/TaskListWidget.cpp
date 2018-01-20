@@ -2,10 +2,6 @@
 
 #include "TaskListWidget.h"
 
-TaskListWidget::TaskListWidget()
-{
-}
-
-TaskListWidget::~TaskListWidget()
+void STaskListWidget::Construct(const FArguments & Args)
 {
 }

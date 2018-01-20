@@ -3,6 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Widgets/SCompoundWidget.h"
+#include "SlateBasics.h"
+
 
 /**
  * 
@@ -11,19 +14,8 @@ class STaskListWidget : public SCompoundWidget
 {
 public:
 	SLATE_BEGIN_ARGS(STaskListWidget)
-		: _bIsSearchWindow(true)
-		, _bHideSearchBar(false)
-		, _ContainingTab()
 	{}
-	SLATE_ARGUMENT(bool, bIsSearchWindow)
-	SLATE_ARGUMENT(bool, bHideSearchBar)
-	SLATE_ARGUMENT(TSharedPtr<SDockTab>, ContainingTab)
 	SLATE_END_ARGS()
 
-		void Construct(const FArguments& InArgs, TSharedPtr<class FBlueprintEditor> InBlueprintEditor = nullptr);
-class TASKLIST_API TaskListWidget
-{
-public:
-	TaskListWidget();
-	~TaskListWidget();
+	void Construct(const FArguments& Args);
 };

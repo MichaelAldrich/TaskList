@@ -5,52 +5,6 @@
 #include "CoreMinimal.h"
 #include "ModuleManager.h"
 
-struct TTaskSearchResult
-{
-	UObject * ParentObject;
-	UEdGraph * ParentGraph;
-	UEdGraphNode * Node;
-	FString TaskID;
-
-	TTaskSearchResult()
-	{
-		TaskID = "";
-		ParentObject = nullptr;
-		ParentGraph = nullptr;
-		Node = nullptr;
-	}
-	
-	TTaskSearchResult(FString InTaskID, UObject * InParentObject, UEdGraph * InParentGraph, UEdGraphNode * InNode)
-	{
-		TaskID = InTaskID;
-		ParentObject = InParentObject;
-		ParentGraph = InParentGraph;
-		Node = InNode;
-	}
-
-	FString ToString()
-	{
-		FString ParentObjectString = "";
-		FString ParentGraphString = "";
-		FString NodeString = "";
-
-		if (ParentObject)
-		{
-			ParentObjectString = ParentObject->GetName();
-		}
-		if (ParentGraph)
-		{
-			ParentGraphString = ParentGraph->GetName();
-		}
-		if (Node)
-		{
-			NodeString = Node->GetName();
-		}
-		return FString((TEXT("Task: %s|Object: %s|Graph: %s|Node: %s"), TaskID, ParentObjectString, ParentGraphString, NodeString));
-	}
-};
-
-
 class FToolBarBuilder;
 class FMenuBuilder;
 

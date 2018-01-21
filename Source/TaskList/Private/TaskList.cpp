@@ -14,6 +14,7 @@
 #include "Engine/Blueprint.h"
 #include "EdGraph/EdGraph.h"
 #include "Editor/UnrealEd/Public/EdGraphNode_Comment.h"
+#include "TaskSearchResult.h"
 
 static const FName TaskListTabName("Task List");
 
@@ -79,7 +80,7 @@ TSharedRef<SDockTab> FTaskListModule::OnSpawnPluginTab(const FSpawnTabArgs& Spaw
 			.VAlign(VAlign_Center)
 			[
 				SNew(SButton)
-				.Text(LOCTEXT("Super Special Button", "Super Special Button"))
+				.Text(LOCTEXT("Super Sad Button", "Super Sad Button"))
 				.OnClicked_Raw(this, &FTaskListModule::UpdateTaskList)
 			]
 		];
@@ -122,7 +123,7 @@ FReply FTaskListModule::UpdateTaskList()
 	TArray<FAssetData> AssetData;
 	AssetRegistryModule.Get().GetAssetsByClass(FName("Blueprint"), AssetData);
 	
-	TArray<UEdGraphNode_Comment*> ResultCommentNodes;
+	TArray<FTaskSearchResult> Results;
 	
 	for (auto& ActiveBPAssetData : AssetData)
 	{
@@ -139,15 +140,14 @@ FReply FTaskListModule::UpdateTaskList()
 			{
 				if (ActiveCommentNode->GetNodeTitle(ENodeTitleType::FullTitle).ToString().StartsWith(TaskPrefix))
 				{
-					ResultCommentNodes.AddUnique(ActiveCommentNode);
-					//ResultCommentNodes.Add(ActiveCommentNode);
+					Results.Add(FTaskSearchResult(TaskPrefix, ActiveBlueprint, ActiveGraph, ActiveCommentNode));
 				}
 			}
 		}
 
-		for (auto& ActiveResultNode : ResultCommentNodes)
+		for (auto& ActiveResult : Results)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Comment: %s"), *ActiveResultNode->GetNodeTitle(ENodeTitleType::FullTitle).ToString())
+			UE_LOG(LogTemp, Warning, TEXT("%s"), *ActiveResult.ToString())
 		}
 		//UE_LOG(LogTemp, Warning, TEXT("Blueprint: %s, Comments: %i"), *ActiveBPAssetData.AssetName.ToString(), ResultCommentNodes.Num())
 	}

@@ -41,5 +41,7 @@ FString FTaskSearchResult::ToString()
 		NodeString = Node->GetNodeTitle((ENodeTitleType::FullTitle)).ToString();
 	}
 	//UE_LOG(LogTemp, Warning, TEXT("Task: %s|Object: %s|Graph: %s|Node: %s"), TaskID, ParentObjectString, ParentGraphString, NodeString)
-	return FString((TEXT("Task: %s|Object: %s|Graph: %s|Node: %s"), TaskID, ParentObjectString, ParentGraphString, NodeString));
+	//return FString("Tings");
+	//TEXT("%s DONKEY: Tank c++ beginplay"), *Name)
+	return FString::Printf(TEXT("Task: %s|Object: %s|Graph: %s|Node: %s"), *TaskID, *ParentObjectString, *ParentGraphString, *NodeString);
 }

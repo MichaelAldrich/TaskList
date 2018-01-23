@@ -20,7 +20,7 @@ FTaskSearchResult::FTaskSearchResult(FString InTaskID, UObject * InParentObject,
 	Node = InNode;
 }
 
-FString FTaskSearchResult::ToString()
+FString FTaskSearchResult::ToString() const
 {
 	FString ParentObjectString = "";
 	FString ParentGraphString = "";
@@ -42,6 +42,10 @@ FString FTaskSearchResult::ToString()
 	}
 	//UE_LOG(LogTemp, Warning, TEXT("Task: %s|Object: %s|Graph: %s|Node: %s"), TaskID, ParentObjectString, ParentGraphString, NodeString)
 	//return FString("Tings");
-	//TEXT("%s DONKEY: Tank c++ beginplay"), *Name)
 	return FString::Printf(TEXT("Task: %s|Object: %s|Graph: %s|Node: %s"), *TaskID, *ParentObjectString, *ParentGraphString, *NodeString);
+}
+
+FText FTaskSearchResult::ToText() const
+{
+	return FText::AsCultureInvariant(ToString());
 }

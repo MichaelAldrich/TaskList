@@ -104,6 +104,7 @@ void FTaskListModule::AddMenuExtension(FMenuBuilder& Builder)
 FReply FTaskListModule::UpdateTaskList()
 {
 	//TODO only get blueprints in content folder, ignore all blueprints in engine folder. Futhermore, allow user to constrain their search to within a specific directory, default to content.
+	//Project Settings>Asset Manager has example of directory picker that I'd like to use for the constraining.
 	//TODO allow for many different prefixes, or "tokens" as VS calls them
 	//TODO visual studio allows for the creation of "shortcuts" basically things to showup in the task list iwthout being a comment
 	//TODO visual stuio allows for arbitrary white space before the token, should we care about that?

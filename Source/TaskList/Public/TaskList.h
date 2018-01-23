@@ -8,6 +8,8 @@
 class FToolBarBuilder;
 class FMenuBuilder;
 
+struct FTaskSearchResult;
+
 class FTaskListModule : public IModuleInterface
 {
 public:
@@ -20,7 +22,11 @@ public:
 	void PluginButtonClicked();
 	
 private:
-	FReply UpdateTaskList();
+	TArray<FTaskSearchResult> DisplayedResults;
+	TArray<FString> TaskPrefixes = {"Dragons", "TODO", "Lions"}; //TODO figure out configuration
+
+	//FReply UpdateTaskList();
+	TArray<FTaskSearchResult>* ParseProjectForTaskList();
 
 	void AddToolbarExtension(FToolBarBuilder& Builder);
 	void AddMenuExtension(FMenuBuilder& Builder);

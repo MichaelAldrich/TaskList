@@ -44,8 +44,3 @@ FString FTaskSearchResult::ToString() const
 	//return FString("Tings");
 	return FString::Printf(TEXT("Task: %s|Object: %s|Graph: %s|Node: %s"), *TaskID, *ParentObjectString, *ParentGraphString, *NodeString);
 }
-
-FText FTaskSearchResult::ToText() const
-{
-	return FText::AsCultureInvariant(ToString());
-}

@@ -15,6 +15,7 @@
 #include "EdGraph/EdGraph.h"
 #include "Editor/UnrealEd/Public/EdGraphNode_Comment.h"
 #include "TaskSearchResult.h"
+#include "TaskListWidget.h"
 
 static const FName TaskListTabName("Task List");
 
@@ -75,6 +76,9 @@ TSharedRef<SDockTab> FTaskListModule::OnSpawnPluginTab(const FSpawnTabArgs& Spaw
 		.TabRole(ETabRole::NomadTab)
 		[
 			// Put your tab content here!
+			SNew(STaskListWidget)
+			.ActiveResults(ParseProjectForTaskList())
+			/*
 			SNew(SBox)
 			.HAlign(HAlign_Center)
 			.VAlign(VAlign_Center)
@@ -83,6 +87,7 @@ TSharedRef<SDockTab> FTaskListModule::OnSpawnPluginTab(const FSpawnTabArgs& Spaw
 				.Text(LOCTEXT("Super Sad Button", "Super Sad Button"))
 				.OnClicked_Raw(this, &FTaskListModule::UpdateTaskList)
 			]
+			*/
 		];
 }
 
@@ -95,7 +100,7 @@ void FTaskListModule::AddMenuExtension(FMenuBuilder& Builder)
 {
 	Builder.AddMenuEntry(FTaskListCommands::Get().OpenPluginWindow);
 }
-
+/*
 FReply FTaskListModule::UpdateTaskList()
 {
 	//TODO only get blueprints in content folder, ignore all blueprints in engine folder. Futhermore, allow user to constrain their search to within a specific directory, default to content.
@@ -107,17 +112,16 @@ FReply FTaskListModule::UpdateTaskList()
 	
 	//NextList
 	//Need to layout the UI, build a method to retun SBox, or Sbutton, or some other slate object when given a TTaskSearchResult
-	//	FPropertyEditorModule maybe can show a TMap of keys "ActualTokens" and values "Display Names"
+	//FPropertyEditorModule maybe can show a TMap of keys "ActualTokens" and values "Display Names"
 	//Need to Update list when SWindow::OnIsActiveChanged is called, need to figure out how to bind to that.
 	//In the mean time, we can keep using the button to do that, after formatting the UI.
-	/*
-	Replace updateTaskList with 2 method calls array of TTaskSearchResult ParseProjectForTaskList() and void RefreshTaskDisplay(array of TTaskSearchResults)
-	This will allow us to insert fake results if necessary(either for testing or for "found nothing" results.)
-	*/
+	
+	//Replace updateTaskList with 2 method calls array of TTaskSearchResult ParseProjectForTaskList() and void RefreshTaskDisplay(array of TTaskSearchResults)
+	//This will allow us to insert fake results if necessary(either for testing or for "found nothing" results.)
 	//FKismetEditorUtilities::BringKismetToFocusAttentionOnObject
 	//UE_LOG(LogTemp, Warning, TEXT("We do a thing when we hit the buton."))
 	
-	FString TaskPrefix = FString("Dragons"); //TODO promote this to property of the class, transform into array, and figure out configuration
+	FString TaskPrefix = FString("Dragons"); //TODO figure out configuration
 	
 	FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
 	TArray<FAssetData> AssetData;
@@ -153,6 +157,41 @@ FReply FTaskListModule::UpdateTaskList()
 	}
 
 	return FReply::Handled();
+}
+*/
+
+TArray<FTaskSearchResult>* FTaskListModule::ParseProjectForTaskList()
+{
+	FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
+	TArray<FAssetData> AssetData;
+	AssetRegistryModule.Get().GetAssetsByClass(FName("Blueprint"), AssetData);
+	TArray<FTaskSearchResult> ActiveResults;
+
+	for (auto& ActiveBPAssetData : AssetData)
+	{
+		UBlueprint* ActiveBlueprint = Cast<UBlueprint>(ActiveBPAssetData.GetAsset());
+
+		TArray<UEdGraph*> AllActiveGraphs;
+		ActiveBlueprint->GetAllGraphs(AllActiveGraphs);
+
+		for (auto& ActiveGraph : AllActiveGraphs)
+		{
+			TArray<UEdGraphNode_Comment*> AllActiveCommentNodes;
+			ActiveGraph->GetNodesOfClass(AllActiveCommentNodes);
+			for (auto& ActiveCommentNode : AllActiveCommentNodes)
+			{
+				for (auto& ActiveTaskPrefix : TaskPrefixes)
+				{
+					if (ActiveCommentNode->GetNodeTitle(ENodeTitleType::FullTitle).ToString().StartsWith(ActiveTaskPrefix))
+					{
+						ActiveResults.Add(FTaskSearchResult(ActiveTaskPrefix, ActiveBlueprint, ActiveGraph, ActiveCommentNode));
+					}
+				}
+			}
+		}
+	}
+	DisplayedResults = ActiveResults;
+	return &DisplayedResults;
 }
 
 void FTaskListModule::AddToolbarExtension(FToolBarBuilder& Builder)

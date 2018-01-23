@@ -25,5 +25,4 @@ public:
 	FTaskSearchResult(FString InTaskID, UObject * InParntObject, UEdGraph * InParentGraph, UEdGraphNode * InNode);
 
 	FString ToString() const;
-	FText ToText() const;
 };

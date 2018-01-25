@@ -120,6 +120,7 @@ FReply FTaskListModule::UpdateTaskList()
 	//This will allow us to insert fake results if necessary(either for testing or for "found nothing" results.)
 	//FKismetEditorUtilities::BringKismetToFocusAttentionOnObject
 	//UE_LOG(LogTemp, Warning, TEXT("We do a thing when we hit the buton."))
+	//As usual, rama has the knowledge on these things. TODO use https://wiki.unrealengine.com/Slate,_Tree_View_Widget,_Ex:_In-Editor_File_Structure_Explorer to compare and test.
 	
 	FString TaskPrefix = FString("Dragons"); //TODO figure out configuration
 	
@@ -160,7 +161,7 @@ FReply FTaskListModule::UpdateTaskList()
 }
 */
 
-TArray<FTaskSearchResult>* FTaskListModule::ParseProjectForTaskList()
+TArray<FTaskSearchResult> FTaskListModule::ParseProjectForTaskList()
 {
 	FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
 	TArray<FAssetData> AssetData;
@@ -191,7 +192,7 @@ TArray<FTaskSearchResult>* FTaskListModule::ParseProjectForTaskList()
 		}
 	}
 	DisplayedResults = ActiveResults;
-	return &DisplayedResults;
+	return DisplayedResults;
 }
 
 void FTaskListModule::AddToolbarExtension(FToolBarBuilder& Builder)

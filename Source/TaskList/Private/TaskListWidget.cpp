@@ -13,18 +13,18 @@ void STaskListWidget::Construct(const FArguments & Args)
 			.AutoHeight()
 			[
 				SNew(STreeView<FTaskSearchResult>)
-				.TreeItemsSource(Args._ActiveResults)
+				.TreeItemsSource(TSharedPtr<Args._ActiveResults>)
 				.OnGenerateRow(this, &STaskListWidget::OnGenerateRow)
 				//.OnGenerateRow_Raw(this, &STaskListWidget::OnGenerateRow)
 			]
 		];
 }
 
-TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(FTaskSearchResult* InResult, const TSharedRef<STableViewBase>& OwnerTable)
+TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(FTaskSearchResult InResult, const TSharedRef<STableViewBase>& OwnerTable)
 {
 	//return TSharedRef<ITableRow>();
 
-	FString DisplayText = InResult->ToString();
+	FString DisplayText = InResult.ToString();
 	return SNew(STableRow< TSharedPtr<FTaskSearchResult> >, OwnerTable)
 		[
 			SNew(SBorder)

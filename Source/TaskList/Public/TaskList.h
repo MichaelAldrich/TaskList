@@ -26,7 +26,7 @@ private:
 	TArray<FString> TaskPrefixes = {"Dragons", "TODO", "Lions"}; //TODO figure out configuration
 
 	//FReply UpdateTaskList();
-	TArray<FTaskSearchResult>* ParseProjectForTaskList();
+	TArray<FTaskSearchResult> ParseProjectForTaskList();
 
 	void AddToolbarExtension(FToolBarBuilder& Builder);
 	void AddMenuExtension(FMenuBuilder& Builder);

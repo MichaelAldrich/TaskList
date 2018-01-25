@@ -17,11 +17,11 @@ public:
 	SLATE_BEGIN_ARGS(STaskListWidget)
 		: _ActiveResults()
 	{}
-		SLATE_ARGUMENT(TArray<FTaskSearchResult>*, ActiveResults)
+		SLATE_ARGUMENT(TArray<FTaskSearchResult>, ActiveResults)
 	SLATE_END_ARGS()
 
 	void Construct(const FArguments& Args);
 
 private:
-	TSharedRef<ITableRow> OnGenerateRow(FTaskSearchResult* InResult, const TSharedRef<STableViewBase>& OwnerTable);
+	TSharedRef<ITableRow> OnGenerateRow(FTaskSearchResult InResult, const TSharedRef<STableViewBase>& OwnerTable);
 };

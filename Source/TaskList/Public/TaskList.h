@@ -8,7 +8,7 @@
 class FToolBarBuilder;
 class FMenuBuilder;
 
-struct FTaskSearchResult;
+class FTaskSearchResult;
 
 class FTaskListModule : public IModuleInterface
 {

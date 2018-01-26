@@ -20,6 +20,7 @@ void STaskListWidget::Construct(const FArguments & Args)
 		];
 }
 */
+/*
 TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(FTaskSearchResult InResult, const TSharedRef<STableViewBase>& OwnerTable)
 {
 	//return TSharedRef<ITableRow>();
@@ -33,7 +34,8 @@ TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(FTaskSearchResult InResult,
 			[
 				SNew(STextBlock)
 				.Text(FText::FromString(DisplayText))
-				.ToolTipText(FText(FText::FromString("Touch my tooltips")))
+				//.ToolTipText(FText(FText::FromString("Touch my tooltips")))
 			]
 		];
 }
+*/

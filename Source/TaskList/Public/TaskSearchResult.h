@@ -10,7 +10,7 @@
 class UEdGraph;
 class UEdGraphNode;
 
-struct FTaskSearchResult
+class FTaskSearchResult
 {
 public:
 
@@ -24,5 +24,5 @@ public:
 	FTaskSearchResult();
 	FTaskSearchResult(FString InTaskID, UObject * InParntObject, UEdGraph * InParentGraph, UEdGraphNode * InNode);
 
-	FString ToString() const;
+	FString ToString();
 };

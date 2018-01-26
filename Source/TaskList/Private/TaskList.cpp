@@ -16,6 +16,7 @@
 #include "Editor/UnrealEd/Public/EdGraphNode_Comment.h"
 #include "TaskSearchResult.h"
 #include "TaskListWidget.h"
+#include "WidgetTest.h"
 
 static const FName TaskListTabName("Task List");
 
@@ -75,10 +76,11 @@ TSharedRef<SDockTab> FTaskListModule::OnSpawnPluginTab(const FSpawnTabArgs& Spaw
 	return SNew(SDockTab)
 		.TabRole(ETabRole::NomadTab)
 		[
-			SNew(SButton)
-			.Text(LOCTEXT("Super nothing Button", "Super nothing Button"))
+			//SNew(SButton)
+			//.Text(LOCTEXT("Super nothing Button", "Super nothing Button"))
 			// Put your tab content here!
-			//SNew(STaskListWidget)
+			SNew(STestListWidget)
+			.ToolTipText(LOCTEXT("Touch my tooltips","Touch my tooltips"))
 			//.ActiveResults(ParseProjectForTaskList())
 			/*
 			SNew(SBox)

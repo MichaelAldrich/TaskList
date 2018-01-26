@@ -7,7 +7,7 @@
 #include "SlateBasics.h"
 
 
-struct FTaskSearchResult;
+class FTaskSearchResult;
 /**
  * 
  */
@@ -24,5 +24,7 @@ public:
 	void Construct(const FArguments& Args);
 	*/
 private:
+	/*
 	TSharedRef<ITableRow> OnGenerateRow(FTaskSearchResult InResult, const TSharedRef<STableViewBase>& OwnerTable);
+	*/
 };

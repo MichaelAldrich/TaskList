@@ -20,7 +20,7 @@ FTaskSearchResult::FTaskSearchResult(FString InTaskID, UObject * InParentObject,
 	Node = InNode;
 }
 
-FString FTaskSearchResult::ToString() const
+FString FTaskSearchResult::ToString()
 {
 	FString ParentObjectString = "";
 	FString ParentGraphString = "";

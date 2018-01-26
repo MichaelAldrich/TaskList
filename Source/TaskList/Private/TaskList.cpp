@@ -75,9 +75,11 @@ TSharedRef<SDockTab> FTaskListModule::OnSpawnPluginTab(const FSpawnTabArgs& Spaw
 	return SNew(SDockTab)
 		.TabRole(ETabRole::NomadTab)
 		[
+			SNew(SButton)
+			.Text(LOCTEXT("Super nothing Button", "Super nothing Button"))
 			// Put your tab content here!
-			SNew(STaskListWidget)
-			.ActiveResults(ParseProjectForTaskList())
+			//SNew(STaskListWidget)
+			//.ActiveResults(ParseProjectForTaskList())
 			/*
 			SNew(SBox)
 			.HAlign(HAlign_Center)

@@ -3,7 +3,7 @@
 #include "TaskListWidget.h"
 #include "TaskSearchResult.h"
 #include "Widgets/Views/STreeView.h"
-
+/*
 void STaskListWidget::Construct(const FArguments & Args)
 {
 	this->ChildSlot
@@ -19,13 +19,13 @@ void STaskListWidget::Construct(const FArguments & Args)
 			]
 		];
 }
-
+*/
 TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(FTaskSearchResult InResult, const TSharedRef<STableViewBase>& OwnerTable)
 {
 	//return TSharedRef<ITableRow>();
 
 	FString DisplayText = InResult.ToString();
-	return SNew(STableRow< TSharedPtr<FTaskSearchResult> >, OwnerTable)
+	return SNew(STableRow< TSharedPtr<class FTaskSearchResult> >, OwnerTable)
 		[
 			SNew(SBorder)
 			.VAlign(VAlign_Center)

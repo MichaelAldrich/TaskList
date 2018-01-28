@@ -17,27 +17,47 @@ void STestListWidget::Construct(const FArguments& Args)
 			]
 			+ SScrollBox::Slot()
 			[
-				SAssignNew(ListViewWidget, SListView<TSharedPtr<FString>>)
+				SAssignNew(ListViewWidget, STreeView<TSharedPtr<FString>>)
 				.ItemHeight(24)
-				.ListItemsSource(&Items)
+				.TreeItemsSource(&Items)
 				.OnGenerateRow(this, &STestListWidget::OnGenerateRow)
+				.OnGetChildren(this, &STestListWidget::OnGetChildren)
 			]
 		];
 }
 
 TSharedRef<ITableRow> STestListWidget::OnGenerateRow(TSharedPtr<FString> Item, const TSharedRef<STableViewBase>& OwnerTable)
 {
+	if (Item->StartsWith("A"))
+	{
+		return
+			SNew(STableRow<TSharedPtr<FString>>, OwnerTable)
+			.Padding(2.0f)
+			[
+				SNew(STextBlock).Text(FText::FromString(*Item.Get()))
+			];
+	}
+}
+
+void STestListWidget::OnGetChildren(TSharedPtr<FString> Item, TArray<TSharedPtr<FString>>& OutChildren)
+{
+	FString OutString = FString(*Item + " child");
+	TSharedPtr<FString> OutPtr = 
+	OutChildren.Append(TSharedPtr<OutString>);
+	/*
 	return
 		SNew(STableRow<TSharedPtr<FString>>, OwnerTable)
 		.Padding(2.0f)
 		[
-			SNew(STextBlock).Text(FText::FromString(*Item.Get()))
+			SNew(STextBlock).Text(FText::FromString(*Item.Get() + "deeper"))
 		];
+	*/
 }
 
 FReply STestListWidget::ButtonPressed()
 {
-	Items.Add(MakeShareable(new FString("Take a break")));
+	Items.Add(MakeShareable(new FString("AGood Grief")));
+	Items.Add(MakeShareable(new FString("BTake Care")));
 	ListViewWidget->RequestListRefresh();
 	return FReply::Handled();
 }

@@ -14,6 +14,7 @@ public:
 	void Construct(const FArguments& Args);
 
 	TSharedRef<ITableRow> OnGenerateRow(TSharedPtr<FString> Item, const TSharedRef<STableViewBase>& OwnerTable);
+	void OnGetChildren(TSharedPtr<FString> Item, TArray<TSharedPtr<FString>>& OutChildren);
 
 	TArray<TSharedPtr<FString>> Items;
 

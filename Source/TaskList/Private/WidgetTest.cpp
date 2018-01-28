@@ -6,6 +6,8 @@
 
 void STestListWidget::Construct(const FArguments& Args)
 {
+	Items.Add(MakeShareable(new FString("AGood Grief")));
+	Items.Add(MakeShareable(new FString("BSad Trees")));
 	this->ChildSlot
 		[
 			SNew(SScrollBox)
@@ -37,27 +39,36 @@ TSharedRef<ITableRow> STestListWidget::OnGenerateRow(TSharedPtr<FString> Item, c
 				SNew(STextBlock).Text(FText::FromString(*Item.Get()))
 			];
 	}
+	else
+	{
+		return SNew(STableRow<TSharedPtr<FString>>, OwnerTable)
+			[
+				SNew(STextBlock).Text(FText::FromString("THIS WAS NULL SOMEHOW"))
+			];
+	}
 }
 
 void STestListWidget::OnGetChildren(TSharedPtr<FString> Item, TArray<TSharedPtr<FString>>& OutChildren)
 {
-	FString OutString = FString(*Item + " child");
-	TSharedPtr<FString> OutPtr = 
-	OutChildren.Append(TSharedPtr<OutString>);
-	/*
-	return
-		SNew(STableRow<TSharedPtr<FString>>, OwnerTable)
-		.Padding(2.0f)
-		[
-			SNew(STextBlock).Text(FText::FromString(*Item.Get() + "deeper"))
-		];
-	*/
+	//FString OutString = FString(*Item + " child");
+	//TSharedPtr<FString> OutPtr =
+	//auto New = MakeShareable(new FString(*Item + " child"));
+	//Items.Add(New);
+	//OutChildren.Add(New);
+	for (auto& Item : Items)
+	{
+
+		if (Item->StartsWith("B"))
+		{
+			OutChildren.Add(Item);
+		}
+	};
 }
 
 FReply STestListWidget::ButtonPressed()
 {
 	Items.Add(MakeShareable(new FString("AGood Grief")));
-	Items.Add(MakeShareable(new FString("BTake Care")));
+	Items.Add(MakeShareable(new FString("BSad Trees")));
 	ListViewWidget->RequestListRefresh();
 	return FReply::Handled();
 }

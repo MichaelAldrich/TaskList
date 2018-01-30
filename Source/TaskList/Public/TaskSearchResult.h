@@ -5,24 +5,25 @@
 #include "CoreMinimal.h"
 
 /**
- * 
- */
-class UEdGraph;
-class UEdGraphNode;
-
+*
+*/
 class FTaskSearchResult
 {
 public:
 
-	UObject * ParentObject;
-	UEdGraph * ParentGraph;
-	UEdGraphNode * Node;
-	FString TaskID;
+	UObject * TargetObject = nullptr;
+	FString CategoryID = "none";
+	bool bIsCategory = false;
 
 public:
 
-	FTaskSearchResult();
-	FTaskSearchResult(FString InTaskID, UObject * InParntObject, UEdGraph * InParentGraph, UEdGraphNode * InNode);
+	FTaskSearchResult(UObject * InTargetObject, bool InbIsCategory, FString InCategoryID);
+	FTaskSearchResult(UObject * InTargetObject);
 
-	FString ToString();
+	void AddChild(TSharedRef<FTaskSearchResult> InChild);
+	void GetChildren(TArray< TSharedPtr<FTaskSearchResult> >& OutChildren);
+
+private:
+	TArray< TSharedPtr<FTaskSearchResult> > Children;
+
 };

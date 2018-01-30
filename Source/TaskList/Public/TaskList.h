@@ -23,7 +23,6 @@ public:
 	
 private:
 	TArray<FTaskSearchResult> DisplayedResults;
-	TArray<FString> TaskPrefixes = {"Dragons", "TODO", "Lions"}; //TODO figure out configuration
 
 	//FReply UpdateTaskList();
 	TArray<FTaskSearchResult> ParseProjectForTaskList();

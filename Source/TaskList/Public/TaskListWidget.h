@@ -2,29 +2,39 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Widgets/SCompoundWidget.h"
 #include "SlateBasics.h"
 
-
+class UEdgraph;
+class UEdgraphNode;
+class FAssetRegistryModule;
 class FTaskSearchResult;
-/**
- * 
- */
+
+typedef TSharedPtr<FTaskSearchResult> TaskSearchResultSharedPtr;
+
 class STaskListWidget : public SCompoundWidget
 {
 public:
-	/*
 	SLATE_BEGIN_ARGS(STaskListWidget)
-		: _ActiveResults()
 	{}
-		SLATE_ARGUMENT(TArray<FTaskSearchResult>, ActiveResults)
 	SLATE_END_ARGS()
-	
-	void Construct(const FArguments& Args);
-	*/
+
+		void Construct(const FArguments& Args);
+
+	TSharedRef<ITableRow> OnGenerateRow(TaskSearchResultSharedPtr Item, const TSharedRef<STableViewBase>& OwnerTable);
+	void OnGetChildren(TaskSearchResultSharedPtr Item, TArray<TaskSearchResultSharedPtr>& OutChildren);
+
+	TArray<TaskSearchResultSharedPtr> ActiveResults;
+	//TArray<TMap<FString, TArray<TMap<UObject*, TArray<TMap<UEdgraph*, TArray<UEdGraphNode*>>>>>>> ActiveResults;
+
+	FReply ButtonPressed();
+
+	TSharedPtr <SListView <TaskSearchResultSharedPtr> > ListViewWidget;
+
 private:
-	/*
-	TSharedRef<ITableRow> OnGenerateRow(FTaskSearchResult InResult, const TSharedRef<STableViewBase>& OwnerTable);
-	*/
+	TArray<FString> TaskPrefixes = { "Dragons", "TODO", "Lions" }; //TODO figure out configuration
+	FAssetRegistryModule& ActiveAssetRegistryModule;
+
+private:
+	void UpdateActiveResults();
+
 };

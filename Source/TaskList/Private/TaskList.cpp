@@ -75,10 +75,10 @@ TSharedRef<SDockTab> FTaskListModule::OnSpawnPluginTab(const FSpawnTabArgs& Spaw
 	return SNew(SDockTab)
 		.TabRole(ETabRole::NomadTab)
 		[
-			//SNew(SButton)
-			//.Text(LOCTEXT("Super nothing Button", "Super nothing Button"))
+			SNew(SButton)
+			.Text(LOCTEXT("Super nothing Button", "Super nothing Button"))
 			// Put your tab content here!
-			SNew(STaskListWidget)
+			//SNew(STaskListWidget)
 			.ToolTipText(LOCTEXT("Touch my tooltips","Touch my tooltips"))
 			//.ActiveResults(ParseProjectForTaskList())
 			/*
@@ -167,6 +167,7 @@ FReply FTaskListModule::UpdateTaskList()
 
 TArray<FTaskSearchResult> FTaskListModule::ParseProjectForTaskList()
 {
+	/*
 	FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
 	TArray<FAssetData> AssetData;
 	AssetRegistryModule.Get().GetAssetsByClass(FName("Blueprint"), AssetData);
@@ -196,6 +197,7 @@ TArray<FTaskSearchResult> FTaskListModule::ParseProjectForTaskList()
 		}
 	}
 	DisplayedResults = ActiveResults;
+	*/
 	return DisplayedResults;
 }
 

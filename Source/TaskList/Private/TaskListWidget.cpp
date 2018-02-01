@@ -48,12 +48,15 @@ TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TaskSearchResultSharedPtr I
 	}
 	else
 	{
-	return SNew(STableRow<TSharedPtr<FString>>, OwnerTable)
+	*/
+	return SNew(STableRow<TSharedPtr<FString>>, OwnerTable);
+	/*
 	[
 	SNew(STextBlock).Text(FText::FromString("THIS WAS NULL SOMEHOW"))
 	];
 	}
 	*/
+	
 }
 
 void STaskListWidget::OnGetChildren(TaskSearchResultSharedPtr Item, TArray<TaskSearchResultSharedPtr>& OutChildren)

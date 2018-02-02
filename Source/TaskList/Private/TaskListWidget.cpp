@@ -11,13 +11,12 @@
 
 void STaskListWidget::Construct(const FArguments& Args)
 {
-	ActiveAssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
-
 	this->ChildSlot
 		[
 			SNew(SScrollBox)
 			+ SScrollBox::Slot()
 			[
+				//SNew(SButton)
 				SAssignNew(TreeViewWidget, STreeView<TaskSearchResultSharedPtr>)
 				.ItemHeight(24)
 				.TreeItemsSource(&FoundTasks)
@@ -30,97 +29,77 @@ void STaskListWidget::Construct(const FArguments& Args)
 
 TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TaskSearchResultSharedPtr Item, const TSharedRef<STableViewBase>& OwnerTable)
 {
-	/*
-	if (Item->StartsWith("A"))
+	FString RowTitle = "No Title Found";
+
+	if (Item->bIsCategory)
 	{
+		RowTitle = Item->CategoryID;
+	}
+	else if (Item->TargetCommentNode)
+	{
+		RowTitle = Item->TargetCommentNode->GetFullName();
+	}
+
 	return
-	SNew(STableRow<TSharedPtr<FString>>, OwnerTable)
-	.Padding(2.0f)
-	[
-	SNew(STextBlock).Text(FText::FromString(*Item.Get()))
-	];
-	}
-	else
-	{
-	*/
-	return SNew(STableRow<TSharedPtr<FString>>, OwnerTable);
-	/*
-	[
-	SNew(STextBlock).Text(FText::FromString("THIS WAS NULL SOMEHOW"))
-	];
-	}
-	*/
-	
+		SNew(STableRow<TSharedPtr<FString>>, OwnerTable)
+		.Padding(2.f)
+		[
+			SNew(STextBlock)
+			.Text(FText::FromString(RowTitle))
+		];	
 }
 
 void STaskListWidget::OnGetChildren(TaskSearchResultSharedPtr Item, TArray<TaskSearchResultSharedPtr>& OutChildren)
 {
-	//FString OutString = FString(*Item + " child");
-	//TSharedPtr<FString> OutPtr =
-	//auto New = MakeShareable(new FString(*Item + " child"));
-	//Items.Add(New);
-	//OutChildren.Add(New);
-	/*
-	for (auto& Item : Items)
+	for (auto& Result : ActiveResults)
 	{
-
-	if (Item->StartsWith("B"))
-	{
-	OutChildren.Add(Item);
+		if (Result->CategoryID == Item->CategoryID)
+		{
+			OutChildren.Add(Result);
+		}
 	}
-	};
-	*/
-}
-
-FReply STaskListWidget::ButtonPressed()
-{
-	TreeViewWidget->RequestListRefresh();
-	return FReply::Handled();
 }
 
 void STaskListWidget::UpdateActiveResults()
 {
+	FAssetRegistryModule& ActiveAssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
+	
 	TArray<FAssetData> AssetData;
 	ActiveAssetRegistryModule.Get().GetAssetsByClass(FName("Blueprint"), AssetData);
 	TArray<TaskSearchResultSharedPtr> CurrentResults;
+	TSet<FString> ActiveFoundTasks;
 
-	TMap<FString, FTaskSearchResult> TaskResultsMap;
-
-	for (auto& ActiveTaskPrefix : TaskPrefixes)
-	{
-		TaskResultsMap.Add(ActiveTaskPrefix, FTaskSearchResult(nullptr, true, ActiveTaskPrefix));
-	}
-	
 	for (auto& ActiveBPAssetData : AssetData)
 	{
 		TArray<UEdGraph*> AllActiveGraphs;
 		
 		UBlueprint* ActiveBlueprint = Cast<UBlueprint>(ActiveBPAssetData.GetAsset());
 		ActiveBlueprint->GetAllGraphs(AllActiveGraphs);
-		FTaskSearchResult ActiveBlueprintSearchResult = FTaskSearchResult(ActiveBlueprint);
 
 		for (auto& ActiveGraph : AllActiveGraphs)
 		{
 			TArray<UEdGraphNode_Comment*> AllActiveCommentNodes;
 			ActiveGraph->GetNodesOfClass(AllActiveCommentNodes);
 
-			FTaskSearchResult ActiveGraphSearchResult = FTaskSearchResult(ActiveGraph);
-
 			for (auto& ActiveCommentNode : AllActiveCommentNodes)
 			{
-				FTaskSearchResult ActiveCommentSearchResult = FTaskSearchResult(ActiveCommentNode);
-
 				for (auto& ActiveTaskPrefix : TaskPrefixes)
 				{
 					if (ActiveCommentNode->GetNodeTitle(ENodeTitleType::FullTitle).ToString().StartsWith(ActiveTaskPrefix))
 					{
-						//CurrentResults.Add(FTaskSearchResult(ActiveTaskPrefix, ActiveBlueprint, ActiveGraph, ActiveCommentNode));
+						CurrentResults.Add(MakeShareable(new FTaskSearchResult(ActiveBlueprint, ActiveGraph, ActiveCommentNode, ActiveTaskPrefix)));
+						ActiveFoundTasks.Add(ActiveTaskPrefix);
 					}
 				}
 			}
 		}
 	}
 	
+	for (auto& ActiveTaskPrefix : ActiveFoundTasks)
+	{
+		FoundTasks.Add(MakeShareable(new FTaskSearchResult(ActiveTaskPrefix)));
+	}
+
 	ActiveResults = CurrentResults;
 	TreeViewWidget->RequestListRefresh();
 }

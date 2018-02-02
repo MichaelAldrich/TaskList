@@ -77,20 +77,8 @@ TSharedRef<SDockTab> FTaskListModule::OnSpawnPluginTab(const FSpawnTabArgs& Spaw
 		[
 			//SNew(SButton)
 			//.Text(LOCTEXT("Super nothing Button", "Super nothing Button"))
-			// Put your tab content here!
 			SNew(STaskListWidget)
-			.ToolTipText(LOCTEXT("Touch my tooltips","Touch my tooltips"))
-			//.ActiveResults(ParseProjectForTaskList())
-			/*
-			SNew(SBox)
-			.HAlign(HAlign_Center)
-			.VAlign(VAlign_Center)
-			[
-				SNew(SButton)
-				.Text(LOCTEXT("Super Sad Button", "Super Sad Button"))
-				.OnClicked_Raw(this, &FTaskListModule::UpdateTaskList)
-			]
-			*/
+			//.ToolTipText(LOCTEXT("Touch my tooltips","Touch my tooltips"))
 		];
 }
 

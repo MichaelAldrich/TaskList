@@ -18,21 +18,17 @@ public:
 	{}
 	SLATE_END_ARGS()
 
-		void Construct(const FArguments& Args);
-
-	TSharedRef<ITableRow> OnGenerateRow(TaskSearchResultSharedPtr Item, const TSharedRef<STableViewBase>& OwnerTable);
-	void OnGetChildren(TaskSearchResultSharedPtr Item, TArray<TaskSearchResultSharedPtr>& OutChildren);
-
 	TArray<TaskSearchResultSharedPtr> FoundTasks;
 	TArray<TaskSearchResultSharedPtr> ActiveResults;
-
-	FReply ButtonPressed();
-
 	TSharedPtr <SListView <TaskSearchResultSharedPtr> > TreeViewWidget;
 
+public:
+	void Construct(const FArguments& Args);
+	TSharedRef<ITableRow> OnGenerateRow(TaskSearchResultSharedPtr Item, const TSharedRef<STableViewBase>& OwnerTable);
+	void OnGetChildren(TaskSearchResultSharedPtr Item, TArray<TaskSearchResultSharedPtr>& OutChildren);
+	
 private:
 	TArray<FString> TaskPrefixes = { "Dragons", "TODO", "Lions" }; //TODO figure out configuration
-	FAssetRegistryModule& ActiveAssetRegistryModule;
 
 private:
 	void UpdateActiveResults();

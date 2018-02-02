@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 
+class UEdGraph;
+class UEdGraphNode_Comment;
+
 /**
 *
 */
@@ -12,13 +15,15 @@ class FTaskSearchResult
 public:
 
 	UObject * TargetObject = nullptr;
+	UEdGraph * TargetGraph = nullptr;
+	UEdGraphNode_Comment * TargetCommentNode = nullptr;
 	FString CategoryID = "none";
 	bool bIsCategory = false;
 
 public:
 
-	FTaskSearchResult(UObject * InTargetObject, bool InbIsCategory, FString InCategoryID);
-	FTaskSearchResult(UObject * InTargetObject);
+	FTaskSearchResult(FString InCategoryID);
+	FTaskSearchResult(UObject * InTargetObject, UEdGraph * InTargetGraph, UEdGraphNode_Comment * InTargetCommentNode, FString InCategoryID);
 
 	void AddChild(TSharedRef<FTaskSearchResult> InChild);
 	void GetChildren(TArray< TSharedPtr<FTaskSearchResult> >& OutChildren);

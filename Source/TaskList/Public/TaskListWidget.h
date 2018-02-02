@@ -23,12 +23,12 @@ public:
 	TSharedRef<ITableRow> OnGenerateRow(TaskSearchResultSharedPtr Item, const TSharedRef<STableViewBase>& OwnerTable);
 	void OnGetChildren(TaskSearchResultSharedPtr Item, TArray<TaskSearchResultSharedPtr>& OutChildren);
 
+	TArray<TaskSearchResultSharedPtr> FoundTasks;
 	TArray<TaskSearchResultSharedPtr> ActiveResults;
-	//TArray<TMap<FString, TArray<TMap<UObject*, TArray<TMap<UEdgraph*, TArray<UEdGraphNode*>>>>>>> ActiveResults;
 
 	FReply ButtonPressed();
 
-	TSharedPtr <SListView <TaskSearchResultSharedPtr> > ListViewWidget;
+	TSharedPtr <SListView <TaskSearchResultSharedPtr> > TreeViewWidget;
 
 private:
 	TArray<FString> TaskPrefixes = { "Dragons", "TODO", "Lions" }; //TODO figure out configuration

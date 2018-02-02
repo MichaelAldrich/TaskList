@@ -2,15 +2,26 @@
 
 #include "TaskSearchResult.h"
 
-FTaskSearchResult::FTaskSearchResult(UObject * InTargetObject, bool InbIsCategory, FString InCategoryID)
+FTaskSearchResult::FTaskSearchResult(FString InCategoryID)
 {
-	if (InTargetObject) { TargetObject = InTargetObject; }
-	bIsCategory = InbIsCategory;
 	CategoryID = InCategoryID;
+	bIsCategory = true;
 }
 
-FTaskSearchResult::FTaskSearchResult(UObject * InTargetObject)
+FTaskSearchResult::FTaskSearchResult(UObject * InTargetObject, UEdGraph * InTargetGraph, UEdGraphNode_Comment * InTargetCommentNode, FString InCategoryID)
 {
-	bIsCategory = false;
-	if (InTargetObject) { TargetObject = InTargetObject; }
+	TargetObject = InTargetObject;
+	TargetGraph = InTargetGraph;
+	TargetCommentNode = InTargetCommentNode;
+	FString CategoryID = InCategoryID;
+}
+
+void FTaskSearchResult::AddChild(TSharedRef<FTaskSearchResult> InChild)
+{
+	Children.Add(InChild);
+}
+
+void FTaskSearchResult::GetChildren(TArray<TSharedPtr<FTaskSearchResult>>& OutChildren)
+{
+	OutChildren = Children;
 }

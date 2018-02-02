@@ -17,19 +17,13 @@ void STaskListWidget::Construct(const FArguments& Args)
 		[
 			SNew(SScrollBox)
 			+ SScrollBox::Slot()
-		[
-			SNew(SButton)
-			.Text(LOCTEXT("AddSomethingText", "Add something."))
-		.OnClicked(this, &STaskListWidget::ButtonPressed)
-		]
-	+ SScrollBox::Slot()
-		[
-			SAssignNew(ListViewWidget, STreeView<TaskSearchResultSharedPtr>)
-			.ItemHeight(24)
-		.TreeItemsSource(&ActiveResults)
-		.OnGenerateRow(this, &STaskListWidget::OnGenerateRow)
-		.OnGetChildren(this, &STaskListWidget::OnGetChildren)
-		]
+			[
+				SAssignNew(TreeViewWidget, STreeView<TaskSearchResultSharedPtr>)
+				.ItemHeight(24)
+				.TreeItemsSource(&FoundTasks)
+				.OnGenerateRow(this, &STaskListWidget::OnGenerateRow)
+				.OnGetChildren(this, &STaskListWidget::OnGetChildren)
+			]
 		];
 	UpdateActiveResults();
 }
@@ -80,7 +74,7 @@ void STaskListWidget::OnGetChildren(TaskSearchResultSharedPtr Item, TArray<TaskS
 
 FReply STaskListWidget::ButtonPressed()
 {
-	ListViewWidget->RequestListRefresh();
+	TreeViewWidget->RequestListRefresh();
 	return FReply::Handled();
 }
 
@@ -88,21 +82,34 @@ void STaskListWidget::UpdateActiveResults()
 {
 	TArray<FAssetData> AssetData;
 	ActiveAssetRegistryModule.Get().GetAssetsByClass(FName("Blueprint"), AssetData);
-	TArray<FTaskSearchResult> CurrentResults;
+	TArray<TaskSearchResultSharedPtr> CurrentResults;
 
+	TMap<FString, FTaskSearchResult> TaskResultsMap;
+
+	for (auto& ActiveTaskPrefix : TaskPrefixes)
+	{
+		TaskResultsMap.Add(ActiveTaskPrefix, FTaskSearchResult(nullptr, true, ActiveTaskPrefix));
+	}
+	
 	for (auto& ActiveBPAssetData : AssetData)
 	{
-		UBlueprint* ActiveBlueprint = Cast<UBlueprint>(ActiveBPAssetData.GetAsset());
-
 		TArray<UEdGraph*> AllActiveGraphs;
+		
+		UBlueprint* ActiveBlueprint = Cast<UBlueprint>(ActiveBPAssetData.GetAsset());
 		ActiveBlueprint->GetAllGraphs(AllActiveGraphs);
+		FTaskSearchResult ActiveBlueprintSearchResult = FTaskSearchResult(ActiveBlueprint);
 
 		for (auto& ActiveGraph : AllActiveGraphs)
 		{
 			TArray<UEdGraphNode_Comment*> AllActiveCommentNodes;
 			ActiveGraph->GetNodesOfClass(AllActiveCommentNodes);
+
+			FTaskSearchResult ActiveGraphSearchResult = FTaskSearchResult(ActiveGraph);
+
 			for (auto& ActiveCommentNode : AllActiveCommentNodes)
 			{
+				FTaskSearchResult ActiveCommentSearchResult = FTaskSearchResult(ActiveCommentNode);
+
 				for (auto& ActiveTaskPrefix : TaskPrefixes)
 				{
 					if (ActiveCommentNode->GetNodeTitle(ENodeTitleType::FullTitle).ToString().StartsWith(ActiveTaskPrefix))
@@ -113,7 +120,7 @@ void STaskListWidget::UpdateActiveResults()
 			}
 		}
 	}
-	//DisplayedResults = CurrentResults;
-
-	ListViewWidget->RequestListRefresh();
+	
+	ActiveResults = CurrentResults;
+	TreeViewWidget->RequestListRefresh();
 }

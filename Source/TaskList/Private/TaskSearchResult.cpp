@@ -13,15 +13,68 @@ FTaskSearchResult::FTaskSearchResult(UObject * InTargetObject, UEdGraph * InTarg
 	TargetObject = InTargetObject;
 	TargetGraph = InTargetGraph;
 	TargetCommentNode = InTargetCommentNode;
-	FString CategoryID = InCategoryID;
+	CategoryID = InCategoryID;
 }
 
-void FTaskSearchResult::AddChild(TSharedRef<FTaskSearchResult> InChild)
+bool FTaskSearchResult::AddChild(TSharedRef<FTaskSearchResult> InChild)
 {
 	Children.Add(InChild);
+	return true;
+}
+
+bool FTaskSearchResult::AddChild(UObject * InTargetObject, UEdGraph * InTargetGraph, UEdGraphNode_Comment * InTargetCommentNode)
+{
+	if (TargetCommentNode) { return false; }
+	if (TargetGraph)
+	{
+		if (InTargetCommentNode && (TargetObject == InTargetObject) && (TargetGraph==InTargetGraph))
+		{
+			Children.Add(MakeShareable(new FTaskSearchResult(InTargetObject, InTargetGraph, InTargetCommentNode, CategoryID)));
+			return true;
+		}
+		else { return false; }
+	}
+	if (TargetObject)
+	{
+		if (InTargetGraph && (TargetObject == InTargetObject))
+		{
+			if (InTargetCommentNode)
+			{
+				for (auto& child : Children)
+				{
+					if (child->TargetGraph == InTargetGraph)
+					{
+						return child->AddChild(InTargetObject, InTargetGraph, InTargetCommentNode);
+					}
+				}
+
+				TSharedRef<FTaskSearchResult> NewChild = MakeShareable(new FTaskSearchResult(InTargetObject, InTargetGraph, nullptr, CategoryID));
+				NewChild->AddChild(InTargetObject, InTargetGraph, InTargetCommentNode);
+				return AddChild(NewChild);
+			}
+			else
+			{
+				return AddChild(MakeShareable(new FTaskSearchResult(InTargetObject, InTargetGraph, nullptr, CategoryID)));
+			}
+		}
+		else { return false; }
+	}
+	else
+	{
+		if (InTargetObject)
+		{
+			//almost done, gotta commit before midnight to watcht the nubmer go up.
+		}
+		else { return false; }
+	}
 }
 
 void FTaskSearchResult::GetChildren(TArray<TSharedPtr<FTaskSearchResult>>& OutChildren)
 {
 	OutChildren = Children;
+}
+
+bool FTaskSearchResult::operator==(const FTaskSearchResult & Comparer)
+{
+	return ((Comparer.TargetObject == TargetObject)&&(Comparer.TargetGraph == TargetGraph)&&(Comparer.TargetCommentNode == TargetCommentNode)&&(Comparer.CategoryID == CategoryID));
 }

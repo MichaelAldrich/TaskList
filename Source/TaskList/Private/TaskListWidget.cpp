@@ -51,12 +51,20 @@ TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TaskSearchResultSharedPtr I
 
 void STaskListWidget::OnGetChildren(TaskSearchResultSharedPtr Item, TArray<TaskSearchResultSharedPtr>& OutChildren)
 {
-	for (auto& Result : ActiveResults)
+	if (Item->bIsCategory)
 	{
-		if (Result->CategoryID == Item->CategoryID)
+		for (auto& Result : ActiveResults)
 		{
-			OutChildren.Add(Result);
+			//UE_LOG(LogTemp, Warning, TEXT("Result ID: %s|Category ID: %s"), *Result->CategoryID, *Item->CategoryID)
+			if (Result->CategoryID == Item->CategoryID)
+			{
+				OutChildren.Add(Result);
+			}
 		}
+	}
+	else
+	{
+		Item->GetChildren(OutChildren);
 	}
 }
 
@@ -68,6 +76,12 @@ void STaskListWidget::UpdateActiveResults()
 	ActiveAssetRegistryModule.Get().GetAssetsByClass(FName("Blueprint"), AssetData);
 	TArray<TaskSearchResultSharedPtr> CurrentResults;
 	TSet<FString> ActiveFoundTasks;
+
+	TMap<FString, FTaskSearchResult> TaskResultsMap;
+	for (auto& ActiveTaskPrefix : TaskPrefixes)
+	{
+		TaskResultsMap.Add(ActiveTaskPrefix, FTaskSearchResult(ActiveTaskPrefix));
+	}
 
 	for (auto& ActiveBPAssetData : AssetData)
 	{

@@ -25,10 +25,13 @@ public:
 	FTaskSearchResult(FString InCategoryID);
 	FTaskSearchResult(UObject * InTargetObject, UEdGraph * InTargetGraph, UEdGraphNode_Comment * InTargetCommentNode, FString InCategoryID);
 
-	void AddChild(TSharedRef<FTaskSearchResult> InChild);
+	bool AddChild(TSharedRef<FTaskSearchResult> InChild);
+	bool AddChild(UObject * InTargetObject, UEdGraph * InTargetGraph, UEdGraphNode_Comment * InTargetCommentNode);
+
 	void GetChildren(TArray< TSharedPtr<FTaskSearchResult> >& OutChildren);
 
 private:
 	TArray< TSharedPtr<FTaskSearchResult> > Children;
 
+	bool operator==(const FTaskSearchResult& Comparer);
 };

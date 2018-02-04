@@ -32,6 +32,4 @@ public:
 
 private:
 	TArray< TSharedPtr<FTaskSearchResult> > Children;
-
-	bool operator==(const FTaskSearchResult& Comparer);
 };

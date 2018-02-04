@@ -63,7 +63,17 @@ bool FTaskSearchResult::AddChild(UObject * InTargetObject, UEdGraph * InTargetGr
 	{
 		if (InTargetObject)
 		{
-			//almost done, gotta commit before midnight to watcht the nubmer go up.
+			for (auto& child : Children)
+			{
+				if (child->TargetObject == InTargetObject)
+				{
+					return child->AddChild(InTargetObject, InTargetGraph, InTargetCommentNode);
+				}
+			}
+
+			TSharedRef<FTaskSearchResult> NewChild = MakeShareable(new FTaskSearchResult(InTargetObject, nullptr, nullptr, CategoryID));
+			NewChild->AddChild(InTargetObject, InTargetGraph, InTargetCommentNode);
+			return AddChild(NewChild);
 		}
 		else { return false; }
 	}
@@ -72,9 +82,4 @@ bool FTaskSearchResult::AddChild(UObject * InTargetObject, UEdGraph * InTargetGr
 void FTaskSearchResult::GetChildren(TArray<TSharedPtr<FTaskSearchResult>>& OutChildren)
 {
 	OutChildren = Children;
-}
-
-bool FTaskSearchResult::operator==(const FTaskSearchResult & Comparer)
-{
-	return ((Comparer.TargetObject == TargetObject)&&(Comparer.TargetGraph == TargetGraph)&&(Comparer.TargetCommentNode == TargetCommentNode)&&(Comparer.CategoryID == CategoryID));
 }

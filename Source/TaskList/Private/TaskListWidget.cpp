@@ -35,9 +35,12 @@ TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TaskSearchResultSharedPtr I
 	{
 		RowTitle = Item->CategoryID;
 	}
-	else if (Item->TargetCommentNode)
+	else
 	{
-		RowTitle = Item->TargetCommentNode->GetFullName();
+		if (Item->TargetCommentNode)
+		{
+			RowTitle = Item->TargetCommentNode->GetFullName();
+		}
 	}
 
 	return
@@ -51,18 +54,7 @@ TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TaskSearchResultSharedPtr I
 
 void STaskListWidget::OnGetChildren(TaskSearchResultSharedPtr Item, TArray<TaskSearchResultSharedPtr>& OutChildren)
 {
-	if (Item->bIsCategory)
-	{
-		for (auto& Result : ActiveResults)
-		{
-			//UE_LOG(LogTemp, Warning, TEXT("Result ID: %s|Category ID: %s"), *Result->CategoryID, *Item->CategoryID)
-			if (Result->CategoryID == Item->CategoryID)
-			{
-				OutChildren.Add(Result);
-			}
-		}
-	}
-	else
+	if (!Item->TargetCommentNode)
 	{
 		Item->GetChildren(OutChildren);
 	}
@@ -74,7 +66,7 @@ void STaskListWidget::UpdateActiveResults()
 	
 	TArray<FAssetData> AssetData;
 	ActiveAssetRegistryModule.Get().GetAssetsByClass(FName("Blueprint"), AssetData);
-	TArray<TaskSearchResultSharedPtr> CurrentResults;
+	
 	TSet<FString> ActiveFoundTasks;
 
 	TMap<FString, FTaskSearchResult> TaskResultsMap;
@@ -101,7 +93,7 @@ void STaskListWidget::UpdateActiveResults()
 				{
 					if (ActiveCommentNode->GetNodeTitle(ENodeTitleType::FullTitle).ToString().StartsWith(ActiveTaskPrefix))
 					{
-						CurrentResults.Add(MakeShareable(new FTaskSearchResult(ActiveBlueprint, ActiveGraph, ActiveCommentNode, ActiveTaskPrefix)));
+						TaskResultsMap.Find(ActiveTaskPrefix)->AddChild(MakeShareable(new FTaskSearchResult(ActiveBlueprint, ActiveGraph, ActiveCommentNode, ActiveTaskPrefix)));
 						ActiveFoundTasks.Add(ActiveTaskPrefix);
 					}
 				}
@@ -111,9 +103,8 @@ void STaskListWidget::UpdateActiveResults()
 	
 	for (auto& ActiveTaskPrefix : ActiveFoundTasks)
 	{
-		FoundTasks.Add(MakeShareable(new FTaskSearchResult(ActiveTaskPrefix)));
+		FoundTasks.Add(MakeShareable(TaskResultsMap.Find(ActiveTaskPrefix)));
 	}
 
-	ActiveResults = CurrentResults;
 	TreeViewWidget->RequestListRefresh();
 }

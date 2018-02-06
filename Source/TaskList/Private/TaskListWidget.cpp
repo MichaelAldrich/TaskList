@@ -30,11 +30,12 @@ void STaskListWidget::Construct(const FArguments& Args)
 TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TaskSearchResultSharedPtr Item, const TSharedRef<STableViewBase>& OwnerTable)
 {
 	FString RowTitle = "No Title Found";
-
+	
 	if (Item->bIsCategory)
 	{
 		RowTitle = Item->CategoryID;
 	}
+	/*
 	else
 	{
 		if (Item->TargetCommentNode)
@@ -42,9 +43,9 @@ TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TaskSearchResultSharedPtr I
 			RowTitle = Item->TargetCommentNode->GetFullName();
 		}
 	}
-
+	*/
 	return
-		SNew(STableRow<TSharedPtr<FString>>, OwnerTable)
+		SNew(STableRow<TSharedPtr<FTaskSearchResult>>, OwnerTable)
 		.Padding(2.f)
 		[
 			SNew(STextBlock)

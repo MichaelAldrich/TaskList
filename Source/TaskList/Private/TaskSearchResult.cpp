@@ -81,5 +81,6 @@ bool FTaskSearchResult::AddChild(UObject * InTargetObject, UEdGraph * InTargetGr
 
 void FTaskSearchResult::GetChildren(TArray<TSharedPtr<FTaskSearchResult>>& OutChildren)
 {
-	OutChildren = Children;
+	OutChildren += Children;
+	//OutChildren = Children;
 }

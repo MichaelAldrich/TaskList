@@ -30,6 +30,8 @@ public:
 
 	void GetChildren(TArray< TSharedPtr<FTaskSearchResult> >& OutChildren);
 
+	virtual ~FTaskSearchResult(){}
+
 private:
 	TArray< TSharedPtr<FTaskSearchResult> > Children;
 };

@@ -30,12 +30,12 @@ void STaskListWidget::Construct(const FArguments& Args)
 TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TaskSearchResultSharedPtr Item, const TSharedRef<STableViewBase>& OwnerTable)
 {
 	FString RowTitle = "No Title Found";
-	
+	/*
 	if (Item->bIsCategory)
 	{
 		RowTitle = Item->CategoryID;
 	}
-	/*
+	
 	else
 	{
 		if (Item->TargetCommentNode)
@@ -45,7 +45,7 @@ TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TaskSearchResultSharedPtr I
 	}
 	*/
 	return
-		SNew(STableRow<TSharedPtr<FTaskSearchResult>>, OwnerTable)
+		SNew(STableRow<TaskSearchResultSharedPtr>, OwnerTable)
 		.Padding(2.f)
 		[
 			SNew(STextBlock)
@@ -55,10 +55,16 @@ TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TaskSearchResultSharedPtr I
 
 void STaskListWidget::OnGetChildren(TaskSearchResultSharedPtr Item, TArray<TaskSearchResultSharedPtr>& OutChildren)
 {
-	if (!Item->TargetCommentNode)
+	
+	UE_LOG(LogTemp, Warning, TEXT("Trying to get children"))
+	Item->GetChildren(OutChildren);
+	/*
+	if (!Item->TargetCommentNode->IsValidLowLevel())
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Trying to return children"))
 		Item->GetChildren(OutChildren);
 	}
+	*/
 }
 
 void STaskListWidget::UpdateActiveResults()
@@ -95,6 +101,7 @@ void STaskListWidget::UpdateActiveResults()
 					if (ActiveCommentNode->GetNodeTitle(ENodeTitleType::FullTitle).ToString().StartsWith(ActiveTaskPrefix))
 					{
 						TaskResultsMap.Find(ActiveTaskPrefix)->AddChild(MakeShareable(new FTaskSearchResult(ActiveBlueprint, ActiveGraph, ActiveCommentNode, ActiveTaskPrefix)));
+						//UE_LOG(LogTemp, Warning, TEXT("Found Child for %s"), *ActiveTaskPrefix)
 						ActiveFoundTasks.Add(ActiveTaskPrefix);
 					}
 				}

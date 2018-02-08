@@ -71,7 +71,6 @@ void FTaskListModule::ShutdownModule()
 
 TSharedRef<SDockTab> FTaskListModule::OnSpawnPluginTab(const FSpawnTabArgs& SpawnTabArgs)
 {
-	//FText WidgetText = LOCTEXT("WindowWidgetText","I can use built in example plugins. I can even change their icon. Someday some code will run.");
 	return SNew(SDockTab)
 		.TabRole(ETabRole::NomadTab)
 		[

@@ -8,8 +8,6 @@
 class FToolBarBuilder;
 class FMenuBuilder;
 
-class FTaskSearchResult;
-
 class FTaskListModule : public IModuleInterface
 {
 public:
@@ -22,18 +20,11 @@ public:
 	void PluginButtonClicked();
 	
 private:
-	TArray<FTaskSearchResult> DisplayedResults;
+	TSharedPtr<class FUICommandList> PluginCommands;
 
-	//FReply UpdateTaskList();
-	TArray<FTaskSearchResult> ParseProjectForTaskList();
-
+private:
 	void AddToolbarExtension(FToolBarBuilder& Builder);
 	void AddMenuExtension(FMenuBuilder& Builder);
 
-
-
 	TSharedRef<class SDockTab> OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs);
-
-private:
-	TSharedPtr<class FUICommandList> PluginCommands;
 };

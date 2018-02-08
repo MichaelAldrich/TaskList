@@ -23,8 +23,6 @@ static const FName TaskListTabName("Task List");
 
 void FTaskListModule::StartupModule()
 {
-	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
-	
 	FTaskListStyle::Initialize();
 	FTaskListStyle::ReloadTextures();
 
@@ -60,8 +58,6 @@ void FTaskListModule::StartupModule()
 
 void FTaskListModule::ShutdownModule()
 {
-	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
-	// we call this function before unloading the module.
 	FTaskListStyle::Shutdown();
 
 	FTaskListCommands::Unregister();
@@ -89,103 +85,6 @@ void FTaskListModule::PluginButtonClicked()
 void FTaskListModule::AddMenuExtension(FMenuBuilder& Builder)
 {
 	Builder.AddMenuEntry(FTaskListCommands::Get().OpenPluginWindow);
-}
-/*
-FReply FTaskListModule::UpdateTaskList()
-{
-	//TODO only get blueprints in content folder, ignore all blueprints in engine folder. Futhermore, allow user to constrain their search to within a specific directory, default to content.
-	//Project Settings>Asset Manager has example of directory picker that I'd like to use for the constraining.
-	//TODO allow for many different prefixes, or "tokens" as VS calls them
-	//TODO visual studio allows for the creation of "shortcuts" basically things to showup in the task list iwthout being a comment
-	//TODO visual stuio allows for arbitrary white space before the token, should we care about that?
-	//TODO consider supporting comments in other graphs, like materials, sound cues, animation bps/graphs and others I'm sure I'm forgetting. Probably should allow users to select the classes they want to search.
-	//TODO allow users to optionally remove the prefix from the display of the item
-	
-	//NextList
-	//Need to layout the UI, build a method to retun SBox, or Sbutton, or some other slate object when given a TTaskSearchResult
-	//FPropertyEditorModule maybe can show a TMap of keys "ActualTokens" and values "Display Names"
-	//Need to Update list when SWindow::OnIsActiveChanged is called, need to figure out how to bind to that.
-	//In the mean time, we can keep using the button to do that, after formatting the UI.
-	
-	//Replace updateTaskList with 2 method calls array of TTaskSearchResult ParseProjectForTaskList() and void RefreshTaskDisplay(array of TTaskSearchResults)
-	//This will allow us to insert fake results if necessary(either for testing or for "found nothing" results.)
-	//FKismetEditorUtilities::BringKismetToFocusAttentionOnObject
-	//UE_LOG(LogTemp, Warning, TEXT("We do a thing when we hit the buton."))
-	//As usual, rama has the knowledge on these things. TODO use https://wiki.unrealengine.com/Slate,_Tree_View_Widget,_Ex:_In-Editor_File_Structure_Explorer to compare and test.
-	
-	FString TaskPrefix = FString("Dragons"); //TODO figure out configuration
-	
-	FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
-	TArray<FAssetData> AssetData;
-	AssetRegistryModule.Get().GetAssetsByClass(FName("Blueprint"), AssetData);
-	
-	TArray<FTaskSearchResult> Results;
-	
-	for (auto& ActiveBPAssetData : AssetData)
-	{
-		UBlueprint* ActiveBlueprint = Cast<UBlueprint>(ActiveBPAssetData.GetAsset());
-		
-		TArray<UEdGraph*> AllActiveGraphs;
-		ActiveBlueprint->GetAllGraphs(AllActiveGraphs);
-
-		for (auto& ActiveGraph : AllActiveGraphs)
-		{
-			TArray<UEdGraphNode_Comment*> AllActiveCommentNodes;
-			ActiveGraph->GetNodesOfClass(AllActiveCommentNodes);
-			for (auto& ActiveCommentNode : AllActiveCommentNodes)
-			{
-				if (ActiveCommentNode->GetNodeTitle(ENodeTitleType::FullTitle).ToString().StartsWith(TaskPrefix))
-				{
-					Results.Add(FTaskSearchResult(TaskPrefix, ActiveBlueprint, ActiveGraph, ActiveCommentNode));
-				}
-			}
-		}
-
-		for (auto& ActiveResult : Results)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *ActiveResult.ToString())
-		}
-		//UE_LOG(LogTemp, Warning, TEXT("Blueprint: %s, Comments: %i"), *ActiveBPAssetData.AssetName.ToString(), ResultCommentNodes.Num())
-	}
-
-	return FReply::Handled();
-}
-*/
-
-TArray<FTaskSearchResult> FTaskListModule::ParseProjectForTaskList()
-{
-	/*
-	FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
-	TArray<FAssetData> AssetData;
-	AssetRegistryModule.Get().GetAssetsByClass(FName("Blueprint"), AssetData);
-	TArray<FTaskSearchResult> ActiveResults;
-
-	for (auto& ActiveBPAssetData : AssetData)
-	{
-		UBlueprint* ActiveBlueprint = Cast<UBlueprint>(ActiveBPAssetData.GetAsset());
-
-		TArray<UEdGraph*> AllActiveGraphs;
-		ActiveBlueprint->GetAllGraphs(AllActiveGraphs);
-
-		for (auto& ActiveGraph : AllActiveGraphs)
-		{
-			TArray<UEdGraphNode_Comment*> AllActiveCommentNodes;
-			ActiveGraph->GetNodesOfClass(AllActiveCommentNodes);
-			for (auto& ActiveCommentNode : AllActiveCommentNodes)
-			{
-				for (auto& ActiveTaskPrefix : TaskPrefixes)
-				{
-					if (ActiveCommentNode->GetNodeTitle(ENodeTitleType::FullTitle).ToString().StartsWith(ActiveTaskPrefix))
-					{
-						ActiveResults.Add(FTaskSearchResult(ActiveTaskPrefix, ActiveBlueprint, ActiveGraph, ActiveCommentNode));
-					}
-				}
-			}
-		}
-	}
-	DisplayedResults = ActiveResults;
-	*/
-	return DisplayedResults;
 }
 
 void FTaskListModule::AddToolbarExtension(FToolBarBuilder& Builder)

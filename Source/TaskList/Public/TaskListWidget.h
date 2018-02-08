@@ -28,7 +28,7 @@ public:
 	void OnGetChildren(TaskSearchResultSharedPtr Item, TArray<TaskSearchResultSharedPtr>& OutChildren);
 	
 private:
-	TArray<FString> TaskPrefixes = { "Dragons", "TODO", "Lions" }; //TODO figure out configuration
+	TArray<FString> TaskPrefixes = { "Dragons", "TODO", "Lions" };
 
 private:
 	void UpdateActiveResults();

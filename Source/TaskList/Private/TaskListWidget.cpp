@@ -16,7 +16,6 @@ void STaskListWidget::Construct(const FArguments& Args)
 			SNew(SScrollBox)
 			+ SScrollBox::Slot()
 			[
-				//SNew(SButton)
 				SAssignNew(TreeViewWidget, STreeView<TaskSearchResultSharedPtr>)
 				.ItemHeight(24)
 				.TreeItemsSource(&FoundTasks)
@@ -59,7 +58,7 @@ void STaskListWidget::OnGetChildren(TaskSearchResultSharedPtr Item, TArray<TaskS
 	UE_LOG(LogTemp, Warning, TEXT("Trying to get children"))
 	Item->GetChildren(OutChildren);
 	/*
-	if (!Item->TargetCommentNode->IsValidLowLevel())
+	if (!Item->TargetCommentNode)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Trying to return children"))
 		Item->GetChildren(OutChildren);

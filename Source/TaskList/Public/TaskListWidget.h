@@ -9,8 +9,6 @@ class UEdgraphNode;
 class FAssetRegistryModule;
 class FTaskSearchResult;
 
-typedef TSharedPtr<FTaskSearchResult> TaskSearchResultSharedPtr;
-
 class STaskListWidget : public SCompoundWidget
 {
 public:
@@ -18,17 +16,17 @@ public:
 	{}
 	SLATE_END_ARGS()
 
-	TArray<TaskSearchResultSharedPtr> FoundTasks;
-	TArray<TaskSearchResultSharedPtr> ActiveResults;
-	TSharedPtr <SListView <TaskSearchResultSharedPtr> > TreeViewWidget;
+	TArray<TSharedPtr<FTaskSearchResult>> FoundTasks;
+	TArray<TSharedPtr<FTaskSearchResult>> ActiveResults;
+	TSharedPtr <SListView <TSharedPtr<FTaskSearchResult>> > TreeViewWidget;
 
 public:
 	void Construct(const FArguments& Args);
-	TSharedRef<ITableRow> OnGenerateRow(TaskSearchResultSharedPtr Item, const TSharedRef<STableViewBase>& OwnerTable);
-	void OnGetChildren(TaskSearchResultSharedPtr Item, TArray<TaskSearchResultSharedPtr>& OutChildren);
+	TSharedRef<ITableRow> OnGenerateRow(TSharedPtr<FTaskSearchResult> Item, const TSharedRef<STableViewBase>& OwnerTable);
+	void OnGetChildren(TSharedPtr<FTaskSearchResult> Item, TArray<TSharedPtr<FTaskSearchResult>>& OutChildren);
 	
 private:
-	TArray<FString> TaskPrefixes = { "Dragons", "TODO", "Lions" };
+	TArray<FString> TaskPrefixes = { FString("Dragons"), FString("TODO"), FString("Lions") };
 
 private:
 	void UpdateActiveResults();

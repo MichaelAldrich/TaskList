@@ -16,7 +16,7 @@ void STaskListWidget::Construct(const FArguments& Args)
 			SNew(SScrollBox)
 			+ SScrollBox::Slot()
 			[
-				SAssignNew(TreeViewWidget, STreeView<TaskSearchResultSharedPtr>)
+				SAssignNew(TreeViewWidget, STreeView<TSharedPtr<FTaskSearchResult>>)
 				.ItemHeight(24)
 				.TreeItemsSource(&FoundTasks)
 				.OnGenerateRow(this, &STaskListWidget::OnGenerateRow)
@@ -26,15 +26,27 @@ void STaskListWidget::Construct(const FArguments& Args)
 	UpdateActiveResults();
 }
 
-TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TaskSearchResultSharedPtr Item, const TSharedRef<STableViewBase>& OwnerTable)
+TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TSharedPtr<FTaskSearchResult> Item, const TSharedRef<STableViewBase>& OwnerTable)
 {
 	FString RowTitle = "No Title Found";
+	if (Item.IsValid())
+	{
+		RowTitle = "The item is real.";
+		if (Item->bIsCategory)
+		{
+			//auto test = Item->CategoryID;
+			RowTitle = "The item is a category";
+		}
+	}
+	else
+	{
+		RowTitle = "The item isn't real.";
+	}
 	/*
 	if (Item->bIsCategory)
 	{
 		RowTitle = Item->CategoryID;
 	}
-	
 	else
 	{
 		if (Item->TargetCommentNode)
@@ -44,7 +56,7 @@ TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TaskSearchResultSharedPtr I
 	}
 	*/
 	return
-		SNew(STableRow<TaskSearchResultSharedPtr>, OwnerTable)
+		SNew(STableRow<TSharedPtr<FTaskSearchResult>>, OwnerTable)
 		.Padding(2.f)
 		[
 			SNew(STextBlock)
@@ -52,11 +64,11 @@ TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TaskSearchResultSharedPtr I
 		];	
 }
 
-void STaskListWidget::OnGetChildren(TaskSearchResultSharedPtr Item, TArray<TaskSearchResultSharedPtr>& OutChildren)
+void STaskListWidget::OnGetChildren(TSharedPtr<FTaskSearchResult> Item, TArray<TSharedPtr<FTaskSearchResult>>& OutChildren)
 {
 	
 	UE_LOG(LogTemp, Warning, TEXT("Trying to get children"))
-	Item->GetChildren(OutChildren);
+	//Item->GetChildren(OutChildren);
 	/*
 	if (!Item->TargetCommentNode)
 	{

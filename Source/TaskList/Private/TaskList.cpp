@@ -73,7 +73,7 @@ TSharedRef<SDockTab> FTaskListModule::OnSpawnPluginTab(const FSpawnTabArgs& Spaw
 			//SNew(SButton)
 			//.Text(LOCTEXT("Super nothing Button", "Super nothing Button"))
 			SNew(STaskListWidget)
-			//.ToolTipText(LOCTEXT("Touch my tooltips","Touch my tooltips"))
+			.ToolTipText(LOCTEXT("Touch my tooltips","Touch my tooltips"))
 		];
 }
 

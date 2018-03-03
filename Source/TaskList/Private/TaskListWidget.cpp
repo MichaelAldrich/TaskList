@@ -69,13 +69,13 @@ void STaskListWidget::OnGetChildren(TSharedPtr<FTaskSearchResult> Item, TArray<T
 	
 	UE_LOG(LogTemp, Warning, TEXT("Trying to get children"))
 	//Item->GetChildren(OutChildren);
-	/*
-	if (!Item->TargetCommentNode)
+	if (Item->bIsCategory)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Trying to return children"))
-		Item->GetChildren(OutChildren);
+		OutChildren.Add(MakeShareable(new FTaskSearchResult("This is a fake child.")));
+		//OutChildren.Append()
+		//UE_LOG(LogTemp, Warning, TEXT("Trying to return children"))
+		//Item->GetChildren(OutChildren);
 	}
-	*/
 }
 
 void STaskListWidget::UpdateActiveResults()

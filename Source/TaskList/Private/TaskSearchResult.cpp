@@ -2,13 +2,13 @@
 
 #include "TaskSearchResult.h"
 
-FTaskSearchResult::FTaskSearchResult(FString InCategoryID)
+FTaskSearchResult::FTaskSearchResult(FName InCategoryID)
 {
 	CategoryID = InCategoryID;
 	bIsCategory = true;
 }
 
-FTaskSearchResult::FTaskSearchResult(UObject * InTargetObject, UEdGraph * InTargetGraph, UEdGraphNode_Comment * InTargetCommentNode, FString InCategoryID)
+FTaskSearchResult::FTaskSearchResult(UObject * InTargetObject, UEdGraph * InTargetGraph, UEdGraphNode_Comment * InTargetCommentNode, FName InCategoryID)
 {
 	TargetObject = InTargetObject;
 	TargetGraph = InTargetGraph;

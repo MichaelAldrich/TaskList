@@ -17,13 +17,13 @@ public:
 	UObject * TargetObject = nullptr;
 	UEdGraph * TargetGraph = nullptr;
 	UEdGraphNode_Comment * TargetCommentNode = nullptr;
-	FString CategoryID = "none";
+	FName CategoryID = FName(TEXT("none"));
 	bool bIsCategory = false;
 
 public:
 
-	FTaskSearchResult(FString InCategoryID);
-	FTaskSearchResult(UObject * InTargetObject, UEdGraph * InTargetGraph, UEdGraphNode_Comment * InTargetCommentNode, FString InCategoryID);
+	FTaskSearchResult(FName InCategoryID);
+	FTaskSearchResult(UObject * InTargetObject, UEdGraph * InTargetGraph, UEdGraphNode_Comment * InTargetCommentNode, FName InCategoryID);
 
 	bool AddChild(TSharedRef<FTaskSearchResult> InChild);
 	bool AddChild(UObject * InTargetObject, UEdGraph * InTargetGraph, UEdGraphNode_Comment * InTargetCommentNode);

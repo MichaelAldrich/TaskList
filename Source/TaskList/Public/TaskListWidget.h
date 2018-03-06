@@ -26,7 +26,7 @@ public:
 	void OnGetChildren(TSharedPtr<FTaskSearchResult> Item, TArray<TSharedPtr<FTaskSearchResult>>& OutChildren);
 	
 private:
-	TArray<FString> TaskPrefixes = { FString("Dragons"), FString("TODO"), FString("Lions") };
+	TArray<FName> TaskPrefixes = { FName(TEXT("dragons")), FName(TEXT("todo")), FName(TEXT("lions")) };
 
 private:
 	void UpdateActiveResults();

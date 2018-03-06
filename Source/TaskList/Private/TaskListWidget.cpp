@@ -31,16 +31,22 @@ TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TSharedPtr<FTaskSearchResul
 	FString RowTitle = "No Title Found";
 	if (Item.IsValid())
 	{
-		RowTitle = "The item is real.";
+		RowTitle = "This item is real.";
 		if (Item->bIsCategory)
 		{
-			//auto test = Item->CategoryID;
-			RowTitle = "The item is a category";
+			auto test = Item->CategoryID;
+			//UE_LOG(LogTemp, Warning, TEXT("category id is %s"), *test.ToString());
+			auto test2 = test.ToString();
+			RowTitle = "Fuck Mimics";
+		}
+		else
+		{
+			RowTitle = "This item is not a cateogry.";
 		}
 	}
 	else
 	{
-		RowTitle = "The item isn't real.";
+		RowTitle = "This item isn't real.";
 	}
 	/*
 	if (Item->bIsCategory)
@@ -85,9 +91,9 @@ void STaskListWidget::UpdateActiveResults()
 	TArray<FAssetData> AssetData;
 	ActiveAssetRegistryModule.Get().GetAssetsByClass(FName("Blueprint"), AssetData);
 	
-	TSet<FString> ActiveFoundTasks;
+	TSet<FName> ActiveFoundTasks;
 
-	TMap<FString, FTaskSearchResult> TaskResultsMap;
+	TMap<FName, FTaskSearchResult> TaskResultsMap;
 	for (auto& ActiveTaskPrefix : TaskPrefixes)
 	{
 		TaskResultsMap.Add(ActiveTaskPrefix, FTaskSearchResult(ActiveTaskPrefix));
@@ -109,7 +115,7 @@ void STaskListWidget::UpdateActiveResults()
 			{
 				for (auto& ActiveTaskPrefix : TaskPrefixes)
 				{
-					if (ActiveCommentNode->GetNodeTitle(ENodeTitleType::FullTitle).ToString().StartsWith(ActiveTaskPrefix))
+					if (ActiveCommentNode->GetNodeTitle(ENodeTitleType::FullTitle).ToString().StartsWith(ActiveTaskPrefix.ToString()))
 					{
 						TaskResultsMap.Find(ActiveTaskPrefix)->AddChild(MakeShareable(new FTaskSearchResult(ActiveBlueprint, ActiveGraph, ActiveCommentNode, ActiveTaskPrefix)));
 						//UE_LOG(LogTemp, Warning, TEXT("Found Child for %s"), *ActiveTaskPrefix)

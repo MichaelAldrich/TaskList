@@ -36,8 +36,8 @@ TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TSharedPtr<FTaskSearchResul
 		{
 			auto test = Item->CategoryID;
 			//UE_LOG(LogTemp, Warning, TEXT("category id is %s"), *test.ToString());
-			auto test2 = test.ToString();
-			RowTitle = "Fuck Mimics";
+			//auto test2 = test.ToString();
+			RowTitle = "Let's not be hasty";
 		}
 		else
 		{

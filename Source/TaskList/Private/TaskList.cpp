@@ -17,6 +17,12 @@
 #include "TaskSearchResult.h"
 #include "TaskListWidget.h"
 
+// Settings
+#include "ISettingsModule.h"
+#include "ISettingsSection.h"
+#include "ISettingsContainer.h"
+#include "TaskListSettings.h"
+
 static const FName TaskListTabName("Task List");
 
 #define LOCTEXT_NAMESPACE "FTaskListModule"

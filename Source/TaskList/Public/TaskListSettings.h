@@ -9,7 +9,8 @@
 /**
  * 
  */
-UCLASS(config = TaskList, defaultconfig)
+//, defaultconfig
+UCLASS(config = TaskList)
 class TASKLIST_API UTaskListSettings : public UObject
 {
 	GENERATED_BODY()
@@ -21,7 +22,7 @@ public:
 	*List of prefixes to search the comments for. Each entry here will effect performance.
 	*See TaskListWidget::UpdateActiveResults
 	*/
-	UPROPERTY(config, EditAnywhere, Category = TaskList)
-	TArray<FName> TaskPrefixes;
+	UPROPERTY(config, EditAnywhere, Category = General)
+	TArray<FName> TaskPrefixes = { FName("dragons"), FName("todo"), FName("lions") };
 
 };

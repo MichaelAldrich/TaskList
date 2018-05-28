@@ -24,11 +24,9 @@ public:
 	void Construct(const FArguments& Args);
 	TSharedRef<ITableRow> OnGenerateRow(TSharedPtr<FTaskSearchResult> Item, const TSharedRef<STableViewBase>& OwnerTable);
 	void OnGetChildren(TSharedPtr<FTaskSearchResult> Item, TArray<TSharedPtr<FTaskSearchResult>>& OutChildren);
-	
-private:
-	TArray<FName> TaskPrefixes = { FName(TEXT("dragons")), FName(TEXT("todo")), FName(TEXT("lions")) };
+	void OnItemDoubleClicked(TSharedPtr<FTaskSearchResult> Item);
 
 private:
 	void UpdateActiveResults();
-
+	TArray<FName> GetPrefixesFromConfig();
 };

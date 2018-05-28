@@ -27,4 +27,9 @@ private:
 	void AddMenuExtension(FMenuBuilder& Builder);
 
 	TSharedRef<class SDockTab> OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs);
+
+	//Settings
+	bool OnSettingsChanged();
+	void RegisterSettings();
+	void UnRegisterSettings();
 };

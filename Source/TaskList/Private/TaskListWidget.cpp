@@ -6,6 +6,8 @@
 #include "Engine/Blueprint.h"
 #include "EdGraph/EdGraph.h"
 #include "Editor/UnrealEd/Public/EdGraphNode_Comment.h"
+#include "Kismet2/KismetEditorUtilities.h"
+#include "TaskListSettings.h"
 
 #define LOCTEXT_NAMESPACE "FTaskListModule"
 
@@ -21,6 +23,7 @@ void STaskListWidget::Construct(const FArguments& Args)
 				.TreeItemsSource(&FoundTasks)
 				.OnGenerateRow(this, &STaskListWidget::OnGenerateRow)
 				.OnGetChildren(this, &STaskListWidget::OnGetChildren)
+				.OnMouseButtonDoubleClick(this, &STaskListWidget::OnItemDoubleClicked)
 			]
 		];
 	UpdateActiveResults();
@@ -28,76 +31,67 @@ void STaskListWidget::Construct(const FArguments& Args)
 
 TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TSharedPtr<FTaskSearchResult> Item, const TSharedRef<STableViewBase>& OwnerTable)
 {
-	FString RowTitle = "No Title Found";
-	if (Item.IsValid())
-	{
-		RowTitle = "This item is real.";
-		if (Item->bIsCategory)
-		{
-			auto test = Item->CategoryID;
-			//UE_LOG(LogTemp, Warning, TEXT("category id is %s"), *test.ToString());
-			//auto test2 = test.ToString();
-			//If everyone is special, then no one is.
-			RowTitle = "Let's not be hasty";
-		}
-		else
-		{
-			RowTitle = "This item is not a cateogry.";
-		}
-	}
-	else
-	{
-		RowTitle = "This item isn't real.";
-	}
-	/*
+	FText RowTitle = FText::FromString("No Title Found");
 	if (Item->bIsCategory)
 	{
-		RowTitle = Item->CategoryID;
+		RowTitle = FText::FromName(Item->CategoryID);
 	}
 	else
 	{
 		if (Item->TargetCommentNode)
 		{
-			RowTitle = Item->TargetCommentNode->GetFullName();
+			RowTitle = Item->TargetCommentNode->GetNodeTitle(ENodeTitleType::FullTitle);
 		}
 	}
-	*/
+	
 	return
 		SNew(STableRow<TSharedPtr<FTaskSearchResult>>, OwnerTable)
 		.Padding(2.f)
 		[
 			SNew(STextBlock)
-			.Text(FText::FromString(RowTitle))
+			.Text(RowTitle)
 		];	
 }
 
 void STaskListWidget::OnGetChildren(TSharedPtr<FTaskSearchResult> Item, TArray<TSharedPtr<FTaskSearchResult>>& OutChildren)
 {
-	
-	UE_LOG(LogTemp, Warning, TEXT("Trying to get children"))
-	//Item->GetChildren(OutChildren);
 	if (Item->bIsCategory)
 	{
-		OutChildren.Add(MakeShareable(new FTaskSearchResult("This is a fake child.")));
-		//OutChildren.Append()
-		//UE_LOG(LogTemp, Warning, TEXT("Trying to return children"))
-		//Item->GetChildren(OutChildren);
+		Item->GetChildren(OutChildren);
+	}
+}
+
+void STaskListWidget::OnItemDoubleClicked(TSharedPtr<FTaskSearchResult> Item)
+{
+	if (Item->TargetCommentNode)
+	{
+		FKismetEditorUtilities::BringKismetToFocusAttentionOnObject(Item->TargetCommentNode);
+	}
+	else if (Item->TargetGraph)
+	{
+		FKismetEditorUtilities::BringKismetToFocusAttentionOnObject(Item->TargetGraph);
+	}
+	else if (Item->TargetObject)
+	{
+		FKismetEditorUtilities::BringKismetToFocusAttentionOnObject(Item->TargetObject);
 	}
 }
 
 void STaskListWidget::UpdateActiveResults()
 {
+	
 	FAssetRegistryModule& ActiveAssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
 	
 	TArray<FAssetData> AssetData;
 	ActiveAssetRegistryModule.Get().GetAssetsByClass(FName("Blueprint"), AssetData);
 	
 	TSet<FName> ActiveFoundTasks;
-
-	TMap<FName, FTaskSearchResult> TaskResultsMap;
-	for (auto& ActiveTaskPrefix : TaskPrefixes)
+	TMap<FName, TSharedPtr<FTaskSearchResult>> TaskResultsMap;
+	TArray<FName> ActivePrefixes = GetPrefixesFromConfig();
+	
+	for (auto& ActiveTaskPrefix : ActivePrefixes)
 	{
-		TaskResultsMap.Add(ActiveTaskPrefix, FTaskSearchResult(ActiveTaskPrefix));
+		TaskResultsMap.Add(ActiveTaskPrefix, MakeShareable(new FTaskSearchResult(ActiveTaskPrefix)));
 	}
 
 	for (auto& ActiveBPAssetData : AssetData)
@@ -114,23 +108,34 @@ void STaskListWidget::UpdateActiveResults()
 
 			for (auto& ActiveCommentNode : AllActiveCommentNodes)
 			{
-				for (auto& ActiveTaskPrefix : TaskPrefixes)
+				for (auto& ActiveTaskPrefix : ActivePrefixes)
 				{
 					if (ActiveCommentNode->GetNodeTitle(ENodeTitleType::FullTitle).ToString().StartsWith(ActiveTaskPrefix.ToString()))
 					{
-						TaskResultsMap.Find(ActiveTaskPrefix)->AddChild(MakeShareable(new FTaskSearchResult(ActiveBlueprint, ActiveGraph, ActiveCommentNode, ActiveTaskPrefix)));
+						FoundTasks.Add(MakeShareable(new FTaskSearchResult(ActiveBlueprint, ActiveGraph, ActiveCommentNode, ActiveTaskPrefix)));
+						//TaskResultsMap.Find(ActiveTaskPrefix)->Get()->AddChild(MakeShareable(new FTaskSearchResult(ActiveBlueprint, ActiveGraph, ActiveCommentNode, ActiveTaskPrefix)));
 						//UE_LOG(LogTemp, Warning, TEXT("Found Child for %s"), *ActiveTaskPrefix)
-						ActiveFoundTasks.Add(ActiveTaskPrefix);
+						//ActiveFoundTasks.Add(ActiveTaskPrefix);
 					}
 				}
 			}
 		}
 	}
-	
-	for (auto& ActiveTaskPrefix : ActiveFoundTasks)
+	/*
+	for (auto& ActiveTaskPrefix : TaskResultsMap.GetKeys)
 	{
-		FoundTasks.Add(MakeShareable(TaskResultsMap.Find(ActiveTaskPrefix)));
+		FoundTasks.Add(TaskResultsMap.Find(ActiveTaskPrefix));
 	}
-
+	
+	auto testitem = new FTaskSearchResult(FName("TestCategory1"));
+	testitem->AddChild(MakeShareable(new FTaskSearchResult("TestSubCategory1")));
+	FoundTasks.Add(MakeShareable(testitem));
+	*/
 	TreeViewWidget->RequestListRefresh();
+}
+
+TArray<FName> STaskListWidget::GetPrefixesFromConfig()
+{
+	const UTaskListSettings * ActiveSettings = GetDefault<UTaskListSettings>();
+	return ActiveSettings->TaskPrefixes;
 }

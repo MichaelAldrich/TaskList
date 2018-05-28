@@ -60,6 +60,8 @@ void FTaskListModule::StartupModule()
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(TaskListTabName, FOnSpawnTab::CreateRaw(this, &FTaskListModule::OnSpawnPluginTab))
 		.SetDisplayName(LOCTEXT("FTaskListTabTitle", "Task List"))
 		.SetMenuType(ETabSpawnerMenuType::Hidden);
+
+	RegisterSettings();
 }
 
 void FTaskListModule::ShutdownModule()
@@ -69,6 +71,8 @@ void FTaskListModule::ShutdownModule()
 	FTaskListCommands::Unregister();
 
 	FGlobalTabmanager::Get()->UnregisterNomadTabSpawner(TaskListTabName);
+
+	UnRegisterSettings();
 }
 
 TSharedRef<SDockTab> FTaskListModule::OnSpawnPluginTab(const FSpawnTabArgs& SpawnTabArgs)
@@ -78,6 +82,47 @@ TSharedRef<SDockTab> FTaskListModule::OnSpawnPluginTab(const FSpawnTabArgs& Spaw
 		[
 			SNew(STaskListWidget)
 		];
+}
+
+bool FTaskListModule::OnSettingsChanged()
+{
+	UTaskListSettings* Settings = GetMutableDefault<UTaskListSettings>();
+	Settings->SaveConfig();
+	return true;
+}
+
+void FTaskListModule::RegisterSettings()
+{
+	if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
+	{
+		/*
+		ISettingsContainerPtr ProjectSettingsContainer = SettingsModule->GetContainer("Project");
+		
+		ProjectSettingsContainer->DescribeCategory("TaskList", FText::FromString("Task List"), FText::FromString("CATEGORYDESCRIPTIONProject specific settings for the task list."));
+		*/
+		ISettingsSectionPtr SettingsSection = SettingsModule->RegisterSettings(
+			"Project", 
+			"Plugins", 
+			"Tasklist",
+			FText::FromString("Task List"),
+			FText::FromString("Project specific settings for the task list."),
+			GetMutableDefault<UTaskListSettings>()
+		);
+		SettingsSection->OnModified().BindRaw(this, &FTaskListModule::OnSettingsChanged);
+		//SettingsSection->OnModified().BindRaw(this, &FTaskListModule::OnSettingsChanged);
+	}
+}
+
+void FTaskListModule::UnRegisterSettings()
+{
+	if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
+	{
+		SettingsModule->UnregisterSettings(
+			"Project",
+			"Plugins",
+			"Tasklist"
+		);
+	}
 }
 
 void FTaskListModule::PluginButtonClicked()

@@ -4,5 +4,4 @@
 
 UTaskListSettings::UTaskListSettings(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-
 }

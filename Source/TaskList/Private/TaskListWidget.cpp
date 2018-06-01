@@ -43,14 +43,33 @@ TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TSharedPtr<FTaskSearchResul
 			RowTitle = Item->TargetCommentNode->GetNodeTitle(ENodeTitleType::FullTitle);
 		}
 	}
-	
+
 	return
 		SNew(STableRow<TSharedPtr<FTaskSearchResult>>, OwnerTable)
 		.Padding(2.f)
 		[
+			SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot()
+			[
+				SNew(STextBlock)
+				.Text(Item->CategoryID)
+			]
+			/*
+			+ SHorizontalBox::Slot()
+			[
+				SNew(STextBlock)
+				.Text(RowTitle)
+			]
+			*/
+		];
+	/*
+	SNew(STableRow<TSharedPtr<FTaskSearchResult>>, OwnerTable)
+		.Padding(2.f)
+		[
 			SNew(STextBlock)
 			.Text(RowTitle)
-		];	
+		];
+	*/
 }
 
 void STaskListWidget::OnGetChildren(TSharedPtr<FTaskSearchResult> Item, TArray<TSharedPtr<FTaskSearchResult>>& OutChildren)
@@ -85,15 +104,16 @@ void STaskListWidget::UpdateActiveResults()
 	TArray<FAssetData> AssetData;
 	ActiveAssetRegistryModule.Get().GetAssetsByClass(FName("Blueprint"), AssetData);
 	
-	TSet<FName> ActiveFoundTasks;
-	TMap<FName, TSharedPtr<FTaskSearchResult>> TaskResultsMap;
 	TArray<FName> ActivePrefixes = GetPrefixesFromConfig();
 	
+
 	for (auto& ActiveTaskPrefix : ActivePrefixes)
 	{
-		TaskResultsMap.Add(ActiveTaskPrefix, MakeShareable(new FTaskSearchResult(ActiveTaskPrefix)));
+		FoundTasks.Add(MakeShareable(new FTaskSearchResult(ActiveTaskPrefix)));
 	}
 
+
+	FoundTasks.Empty();
 	for (auto& ActiveBPAssetData : AssetData)
 	{
 		TArray<UEdGraph*> AllActiveGraphs;
@@ -112,25 +132,16 @@ void STaskListWidget::UpdateActiveResults()
 				{
 					if (ActiveCommentNode->GetNodeTitle(ENodeTitleType::FullTitle).ToString().StartsWith(ActiveTaskPrefix.ToString()))
 					{
+						//FoundTasks[ActivePrefixes.Find(ActiveTaskPrefix)]->AddChild(MakeShareable(new FTaskSearchResult(ActiveBlueprint, ActiveGraph, ActiveCommentNode, ActiveTaskPrefix)));
 						FoundTasks.Add(MakeShareable(new FTaskSearchResult(ActiveBlueprint, ActiveGraph, ActiveCommentNode, ActiveTaskPrefix)));
-						//TaskResultsMap.Find(ActiveTaskPrefix)->Get()->AddChild(MakeShareable(new FTaskSearchResult(ActiveBlueprint, ActiveGraph, ActiveCommentNode, ActiveTaskPrefix)));
-						//UE_LOG(LogTemp, Warning, TEXT("Found Child for %s"), *ActiveTaskPrefix)
-						//ActiveFoundTasks.Add(ActiveTaskPrefix);
 					}
 				}
 			}
 		}
 	}
-	/*
-	for (auto& ActiveTaskPrefix : TaskResultsMap.GetKeys)
-	{
-		FoundTasks.Add(TaskResultsMap.Find(ActiveTaskPrefix));
-	}
-	
-	auto testitem = new FTaskSearchResult(FName("TestCategory1"));
-	testitem->AddChild(MakeShareable(new FTaskSearchResult("TestSubCategory1")));
-	FoundTasks.Add(MakeShareable(testitem));
-	*/
+	//TODO test todo
+	//HACK test hack
+	//FoundTasks.Add(MakeShareable(new FTaskSearchResult("Test")));
 	TreeViewWidget->RequestListRefresh();
 }
 

@@ -31,7 +31,8 @@ void FTaskListModule::StartupModule()
 {
 	FTaskListStyle::Initialize();
 	FTaskListStyle::ReloadTextures();
-
+	//TODO test todo 2
+	//HACK test hack 2
 	FTaskListCommands::Register();
 	
 	PluginCommands = MakeShareable(new FUICommandList);
@@ -95,11 +96,6 @@ void FTaskListModule::RegisterSettings()
 {
 	if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
 	{
-		/*
-		ISettingsContainerPtr ProjectSettingsContainer = SettingsModule->GetContainer("Project");
-		
-		ProjectSettingsContainer->DescribeCategory("TaskList", FText::FromString("Task List"), FText::FromString("CATEGORYDESCRIPTIONProject specific settings for the task list."));
-		*/
 		ISettingsSectionPtr SettingsSection = SettingsModule->RegisterSettings(
 			"Project", 
 			"Plugins", 
@@ -109,7 +105,6 @@ void FTaskListModule::RegisterSettings()
 			GetMutableDefault<UTaskListSettings>()
 		);
 		SettingsSection->OnModified().BindRaw(this, &FTaskListModule::OnSettingsChanged);
-		//SettingsSection->OnModified().BindRaw(this, &FTaskListModule::OnSettingsChanged);
 	}
 }
 

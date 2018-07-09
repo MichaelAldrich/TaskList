@@ -31,8 +31,6 @@ void FTaskListModule::StartupModule()
 {
 	FTaskListStyle::Initialize();
 	FTaskListStyle::ReloadTextures();
-	//TODO test todo 2
-	//HACK test hack 2
 	FTaskListCommands::Register();
 	
 	PluginCommands = MakeShareable(new FUICommandList);

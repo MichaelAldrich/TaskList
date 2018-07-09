@@ -28,5 +28,5 @@ public:
 
 private:
 	void UpdateActiveResults();
-	TArray<FName> GetPrefixesFromConfig();
+	TArray<FName> GetPrefixesFromUserConfig();
 };

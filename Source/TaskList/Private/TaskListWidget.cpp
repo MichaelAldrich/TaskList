@@ -45,6 +45,7 @@ TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TSharedPtr<FTaskSearchResul
 	}
 
 	return
+		/*
 		SNew(STableRow<TSharedPtr<FTaskSearchResult>>, OwnerTable)
 		.Padding(2.f)
 		[
@@ -60,16 +61,16 @@ TSharedRef<ITableRow> STaskListWidget::OnGenerateRow(TSharedPtr<FTaskSearchResul
 				SNew(STextBlock)
 				.Text(RowTitle)
 			]
-			*/
+			
 		];
-	/*
+		*/
 	SNew(STableRow<TSharedPtr<FTaskSearchResult>>, OwnerTable)
 		.Padding(2.f)
 		[
 			SNew(STextBlock)
 			.Text(RowTitle)
 		];
-	*/
+	
 }
 
 void STaskListWidget::OnGetChildren(TSharedPtr<FTaskSearchResult> Item, TArray<TSharedPtr<FTaskSearchResult>>& OutChildren)
@@ -98,20 +99,22 @@ void STaskListWidget::OnItemDoubleClicked(TSharedPtr<FTaskSearchResult> Item)
 
 void STaskListWidget::UpdateActiveResults()
 {
-	
 	FAssetRegistryModule& ActiveAssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
-	
 	TArray<FAssetData> AssetData;
 	ActiveAssetRegistryModule.Get().GetAssetsByClass(FName("Blueprint"), AssetData);
 	
-	TArray<FName> ActivePrefixes = GetPrefixesFromConfig();
-	
-
-	for (auto& ActiveTaskPrefix : ActivePrefixes)
+	//TODO there is a way to make filters for the asset registry. Should assemble a filter based on the config settings for what graphs to serach.
+	TArray<FAssetData> TestData;
+	ActiveAssetRegistryModule.Get().GetAssetsByPath(FName("/Game"), TestData, true);
+	UE_LOG(LogTemp, Warning, TEXT("Sup"));
+	UE_LOG(LogTemp, Warning, TEXT("Count: %i"), TestData.Num());
+	for (auto& TestItem : TestData)
 	{
-		FoundTasks.Add(MakeShareable(new FTaskSearchResult(ActiveTaskPrefix)));
+		FString ActiveName = TestItem.GetFullName();
+		UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *ActiveName);
 	}
 
+	TArray<FName> ActivePrefixes = GetPrefixesFromUserConfig();
 
 	FoundTasks.Empty();
 	for (auto& ActiveBPAssetData : AssetData)
@@ -120,6 +123,9 @@ void STaskListWidget::UpdateActiveResults()
 		
 		UBlueprint* ActiveBlueprint = Cast<UBlueprint>(ActiveBPAssetData.GetAsset());
 		ActiveBlueprint->GetAllGraphs(AllActiveGraphs);
+		
+		FName ActiveClass = ActiveBPAssetData.AssetClass;
+		//if (ActiveClass == FName("Blueprint"))
 
 		for (auto& ActiveGraph : AllActiveGraphs)
 		{
@@ -132,20 +138,16 @@ void STaskListWidget::UpdateActiveResults()
 				{
 					if (ActiveCommentNode->GetNodeTitle(ENodeTitleType::FullTitle).ToString().StartsWith(ActiveTaskPrefix.ToString()))
 					{
-						//FoundTasks[ActivePrefixes.Find(ActiveTaskPrefix)]->AddChild(MakeShareable(new FTaskSearchResult(ActiveBlueprint, ActiveGraph, ActiveCommentNode, ActiveTaskPrefix)));
 						FoundTasks.Add(MakeShareable(new FTaskSearchResult(ActiveBlueprint, ActiveGraph, ActiveCommentNode, ActiveTaskPrefix)));
 					}
 				}
 			}
 		}
 	}
-	//TODO test todo
-	//HACK test hack
-	//FoundTasks.Add(MakeShareable(new FTaskSearchResult("Test")));
 	TreeViewWidget->RequestListRefresh();
 }
 
-TArray<FName> STaskListWidget::GetPrefixesFromConfig()
+TArray<FName> STaskListWidget::GetPrefixesFromUserConfig()
 {
 	const UTaskListSettings * ActiveSettings = GetDefault<UTaskListSettings>();
 	return ActiveSettings->TaskPrefixes;
